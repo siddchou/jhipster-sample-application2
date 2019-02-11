@@ -142,5 +142,7 @@ dto * with mapstruct
 
 // Set service options to all except few
 service all with serviceImpl
+
+filter *
 // Set an angular suffix
 angularSuffix * with ckw
