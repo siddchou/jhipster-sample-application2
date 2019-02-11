@@ -1,0 +1,99 @@
+<div>
+    <h2 id="page-heading">
+        <span>Addresses</span>
+        <button id="jh-create-entity" class="btn btn-primary float-right jh-create-entity create-address-ckw" [routerLink]="['/address-ckw/new']">
+            <fa-icon [icon]="'plus'"></fa-icon>
+            <span class="hidden-sm-down" >
+            Create new Address
+            </span>
+        </button>
+    </h2>
+    <jhi-alert></jhi-alert>
+    <div class="row">
+        <div class="col-sm-12">
+            <form name="searchForm" class="form-inline">
+                <div class="input-group w-100 mt-3">
+                    <input type="text" class="form-control" [(ngModel)]="currentSearch" id="currentSearch" name="currentSearch" placeholder="Query">
+                    <button class="input-group-append btn btn-info" (click)="search(currentSearch)">
+                        <fa-icon [icon]="'search'"></fa-icon>
+                    </button>
+                    <button class="input-group-append btn btn-danger" (click)="clear()" *ngIf="currentSearch">
+                        <fa-icon [icon]="'trash-alt'"></fa-icon>
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+    <br/>
+    <div class="table-responsive" *ngIf="addresses">
+        <table class="table table-striped">
+            <thead>
+            <tr jhiSort [(predicate)]="predicate" [(ascending)]="reverse" [callback]="transition.bind(this)">
+            <th jhiSortBy="id"><span>ID</span> <fa-icon [icon]="'sort'"></fa-icon></th>
+            <th jhiSortBy="addressNickName"><span>Address Nick Name</span> <fa-icon [icon]="'sort'"></fa-icon></th>
+            <th jhiSortBy="addressLine1"><span>Address Line 1</span> <fa-icon [icon]="'sort'"></fa-icon></th>
+            <th jhiSortBy="addressLine2"><span>Address Line 2</span> <fa-icon [icon]="'sort'"></fa-icon></th>
+            <th jhiSortBy="city"><span>City</span> <fa-icon [icon]="'sort'"></fa-icon></th>
+            <th jhiSortBy="state"><span>State</span> <fa-icon [icon]="'sort'"></fa-icon></th>
+            <th jhiSortBy="country"><span>Country</span> <fa-icon [icon]="'sort'"></fa-icon></th>
+            <th jhiSortBy="postalCode"><span>Postal Code</span> <fa-icon [icon]="'sort'"></fa-icon></th>
+            <th jhiSortBy="startDate"><span>Start Date</span> <fa-icon [icon]="'sort'"></fa-icon></th>
+            <th jhiSortBy="endDate"><span>End Date</span> <fa-icon [icon]="'sort'"></fa-icon></th>
+            <th jhiSortBy="appUserId"><span>App User</span> <fa-icon [icon]="'sort'"></fa-icon></th>
+            <th></th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr *ngFor="let address of addresses ;trackBy: trackId">
+                <td><a [routerLink]="['/address-ckw', address.id, 'view' ]">{{address.id}}</a></td>
+                <td>{{address.addressNickName}}</td>
+                <td>{{address.addressLine1}}</td>
+                <td>{{address.addressLine2}}</td>
+                <td>{{address.city}}</td>
+                <td>{{address.state}}</td>
+                <td>{{address.country}}</td>
+                <td>{{address.postalCode}}</td>
+                <td>{{address.startDate | date:'medium'}}</td>
+                <td>{{address.endDate | date:'medium'}}</td>
+                <td>
+                    <div *ngIf="address.appUserId">
+                        <a [routerLink]="['../app-user-ckw', address.appUserId , 'view' ]" >{{address.appUserId}}</a>
+                    </div>
+                </td>
+                <td class="text-right">
+                    <div class="btn-group flex-btn-group-container">
+                        <button type="submit"
+                                [routerLink]="['/address-ckw', address.id, 'view' ]"
+                                class="btn btn-info btn-sm">
+                            <fa-icon [icon]="'eye'"></fa-icon>
+                            <span class="d-none d-md-inline">View</span>
+                        </button>
+                        <button type="submit"
+                                [routerLink]="['/address-ckw', address.id, 'edit']"
+                                class="btn btn-primary btn-sm">
+                            <fa-icon [icon]="'pencil-alt'"></fa-icon>
+                            <span class="d-none d-md-inline">Edit</span>
+                        </button>
+                        <button type="submit"
+                                [routerLink]="['/', 'address-ckw', { outlets: { popup: address.id + '/delete'} }]"
+                                replaceUrl="true"
+                                queryParamsHandling="merge"
+                                class="btn btn-danger btn-sm">
+                            <fa-icon [icon]="'times'"></fa-icon>
+                            <span class="d-none d-md-inline">Delete</span>
+                        </button>
+                    </div>
+                </td>
+            </tr>
+            </tbody>
+        </table>
+    </div>
+    <div *ngIf="addresses && addresses.length">
+        <div class="row justify-content-center">
+            <jhi-item-count [page]="page" [total]="totalItems" [maxSize]="5" [itemsPerPage]="itemsPerPage"></jhi-item-count>
+        </div>
+        <div class="row justify-content-center">
+            <ngb-pagination [collectionSize]="totalItems" [(page)]="page" [pageSize]="itemsPerPage" [maxSize]="5" [rotate]="true" [boundaryLinks]="true" (pageChange)="loadPage(page)"></ngb-pagination>
+        </div>
+    </div>
+</div>

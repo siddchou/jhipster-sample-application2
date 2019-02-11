@@ -1,0 +1,146 @@
+entity Category {
+	categoryName String
+    categoryDescription String
+}
+
+entity Services {
+	serviceName String
+    serviceDescription String
+}
+
+entity ContractorService{
+	isVerified Boolean,
+    startDate Instant,
+    endDate Instant,
+  }
+  
+  entity UserAddressMap {
+	startDate Instant,
+    endDate Instant,
+  }
+
+entity Contractor{
+	firstName String,
+	lastName String,
+	email String,
+  
+	phoneNumber String,
+	hireDate Instant ,
+    startDate Instant,
+    endDate Instant,
+    
+  }
+  
+entity Location{
+	city  String ,
+    province String 
+
+}
+
+entity Rate {
+	rateName String,
+    rateDesc String
+	fullRate Integer,
+    idleRate Integer
+}
+
+entity AppUser{
+	firstName String,
+	lastName String,
+	email String,
+	phoneNumber String,
+    startDate Instant,
+    endDate Instant
+}
+
+entity Address{
+	addressNickName String
+	addressLine1 String, 
+    addressLine2 String,
+	city String ,
+    state String, 
+    country String,
+    postalCode String,
+    startDate Instant,
+    endDate Instant,
+}
+
+enum JobStatus {
+    NOT_STARTED,PROCESSING,COMPLETE,ASSIGNED
+}
+
+enum PaymentType{
+    DEBIT,CREDIT,PAYPAL
+}
+
+entity JobHistory{
+	startDate Instant,
+    endDate Instant,
+    jobStatus JobStatus 
+}
+
+entity JobTimeLog{
+	startDate Instant,
+    endDate Instant,
+    isValidated Boolean,
+}
+
+entity Payment{
+	totalPaymentAmount Double,
+    paymentType PaymentType,
+    contractorAmount Double,
+    businessAmount Double
+    startDate Instant,
+    endDate Instant,
+}
+
+relationship OneToOne {
+	JobHistory{payment} to Payment
+    JobHistory{contractorService} to ContractorService
+    JobHistory{userAddressMap} to UserAddressMap
+}
+
+relationship OneToOne {
+	ContractorService{contractor} to Contractor
+}
+
+
+relationship OneToOne {
+	ContractorService{services} to Services
+    
+}
+
+relationship OneToOne {
+	UserAddressMap{appUser} to AppUser
+    UserAddressMap{address} to Address
+}
+
+relationship OneToMany  {
+	JobHistory{jobTimeLog} to JobTimeLog
+}
+
+relationship OneToMany  {
+	AppUser{address} to Address
+}
+
+
+relationship OneToOne {
+	Services{rate} to Rate
+}
+
+relationship OneToOne {
+	Services{category} to Category
+    Services{location} to Location
+}
+
+
+// Set pagination options
+paginate * with pagination
+//paginate Job with pagination
+
+dto * with mapstruct
+
+// Set service options to all except few
+service all with serviceImpl
+// Set an angular suffix
+angularSuffix * with ckw

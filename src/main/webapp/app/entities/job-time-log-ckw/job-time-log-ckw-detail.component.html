@@ -1,0 +1,41 @@
+<div class="row justify-content-center">
+    <div class="col-8">
+        <div *ngIf="jobTimeLog">
+            <h2><span>Job Time Log</span> {{jobTimeLog.id}}</h2>
+            <hr>
+            <jhi-alert-error></jhi-alert-error>
+            <dl class="row-md jh-entity-details">
+                <dt><span>Start Date</span></dt>
+                <dd>
+                    <span>{{jobTimeLog.startDate}}</span>
+                </dd>
+                <dt><span>End Date</span></dt>
+                <dd>
+                    <span>{{jobTimeLog.endDate}}</span>
+                </dd>
+                <dt><span>Is Validated</span></dt>
+                <dd>
+                    <span>{{jobTimeLog.isValidated}}</span>
+                </dd>
+                <dt><span>Job History</span></dt>
+                <dd>
+                    <div *ngIf="jobTimeLog.jobHistoryId">
+                        <a [routerLink]="['/job-history-ckw', jobTimeLog.jobHistoryId, 'view']">{{jobTimeLog.jobHistoryId}}</a>
+                    </div>
+                </dd>
+            </dl>
+
+            <button type="submit"
+                    (click)="previousState()"
+                    class="btn btn-info">
+                <fa-icon [icon]="'arrow-left'"></fa-icon>&nbsp;<span> Back</span>
+            </button>
+
+            <button type="button"
+                    [routerLink]="['/job-time-log-ckw', jobTimeLog.id, 'edit']"
+                    class="btn btn-primary">
+                <fa-icon [icon]="'pencil-alt'"></fa-icon>&nbsp;<span> Edit</span>
+            </button>
+        </div>
+    </div>
+</div>

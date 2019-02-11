@@ -1,0 +1,60 @@
+{
+    "name": "JobHistory",
+    "fields": [
+        {
+            "fieldName": "startDate",
+            "fieldType": "Instant"
+        },
+        {
+            "fieldName": "endDate",
+            "fieldType": "Instant"
+        },
+        {
+            "fieldName": "jobStatus",
+            "fieldType": "JobStatus",
+            "fieldValues": "NOT_STARTED,PROCESSING,COMPLETE,ASSIGNED"
+        }
+    ],
+    "relationships": [
+        {
+            "relationshipType": "one-to-one",
+            "relationshipName": "payment",
+            "otherEntityName": "payment",
+            "otherEntityField": "id",
+            "ownerSide": true,
+            "otherEntityRelationshipName": "jobHistory"
+        },
+        {
+            "relationshipType": "one-to-one",
+            "relationshipName": "contractorService",
+            "otherEntityName": "contractorService",
+            "otherEntityField": "id",
+            "ownerSide": true,
+            "otherEntityRelationshipName": "jobHistory"
+        },
+        {
+            "relationshipType": "one-to-one",
+            "relationshipName": "userAddressMap",
+            "otherEntityName": "userAddressMap",
+            "otherEntityField": "id",
+            "ownerSide": true,
+            "otherEntityRelationshipName": "jobHistory"
+        },
+        {
+            "relationshipType": "one-to-many",
+            "relationshipName": "jobTimeLog",
+            "otherEntityName": "jobTimeLog",
+            "otherEntityRelationshipName": "jobHistory"
+        }
+    ],
+    "changelogDate": "20190211154353",
+    "entityTableName": "job_history",
+    "dto": "mapstruct",
+    "pagination": "pagination",
+    "service": "serviceImpl",
+    "jpaMetamodelFiltering": false,
+    "fluentMethods": true,
+    "clientRootFolder": "",
+    "applications": "*",
+    "angularJSSuffix": "ckw"
+}

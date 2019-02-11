@@ -1,0 +1,53 @@
+<div class="row justify-content-center">
+    <div class="col-8">
+        <div *ngIf="jobHistory">
+            <h2><span>Job History</span> {{jobHistory.id}}</h2>
+            <hr>
+            <jhi-alert-error></jhi-alert-error>
+            <dl class="row-md jh-entity-details">
+                <dt><span>Start Date</span></dt>
+                <dd>
+                    <span>{{jobHistory.startDate}}</span>
+                </dd>
+                <dt><span>End Date</span></dt>
+                <dd>
+                    <span>{{jobHistory.endDate}}</span>
+                </dd>
+                <dt><span>Job Status</span></dt>
+                <dd>
+                    <span>{{jobHistory.jobStatus}}</span>
+                </dd>
+                <dt><span>Payment</span></dt>
+                <dd>
+                    <div *ngIf="jobHistory.paymentId">
+                        <a [routerLink]="['/payment-ckw', jobHistory.paymentId, 'view']">{{jobHistory.paymentId}}</a>
+                    </div>
+                </dd>
+                <dt><span>Contractor Service</span></dt>
+                <dd>
+                    <div *ngIf="jobHistory.contractorServiceId">
+                        <a [routerLink]="['/contractor-service-ckw', jobHistory.contractorServiceId, 'view']">{{jobHistory.contractorServiceId}}</a>
+                    </div>
+                </dd>
+                <dt><span>User Address Map</span></dt>
+                <dd>
+                    <div *ngIf="jobHistory.userAddressMapId">
+                        <a [routerLink]="['/user-address-map-ckw', jobHistory.userAddressMapId, 'view']">{{jobHistory.userAddressMapId}}</a>
+                    </div>
+                </dd>
+            </dl>
+
+            <button type="submit"
+                    (click)="previousState()"
+                    class="btn btn-info">
+                <fa-icon [icon]="'arrow-left'"></fa-icon>&nbsp;<span> Back</span>
+            </button>
+
+            <button type="button"
+                    [routerLink]="['/job-history-ckw', jobHistory.id, 'edit']"
+                    class="btn btn-primary">
+                <fa-icon [icon]="'pencil-alt'"></fa-icon>&nbsp;<span> Edit</span>
+            </button>
+        </div>
+    </div>
+</div>

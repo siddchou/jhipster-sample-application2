@@ -1,0 +1,43 @@
+<div class="row justify-content-center">
+    <div class="col-8">
+        <div *ngIf="userAddressMap">
+            <h2><span>User Address Map</span> {{userAddressMap.id}}</h2>
+            <hr>
+            <jhi-alert-error></jhi-alert-error>
+            <dl class="row-md jh-entity-details">
+                <dt><span>Start Date</span></dt>
+                <dd>
+                    <span>{{userAddressMap.startDate}}</span>
+                </dd>
+                <dt><span>End Date</span></dt>
+                <dd>
+                    <span>{{userAddressMap.endDate}}</span>
+                </dd>
+                <dt><span>App User</span></dt>
+                <dd>
+                    <div *ngIf="userAddressMap.appUserId">
+                        <a [routerLink]="['/app-user-ckw', userAddressMap.appUserId, 'view']">{{userAddressMap.appUserId}}</a>
+                    </div>
+                </dd>
+                <dt><span>Address</span></dt>
+                <dd>
+                    <div *ngIf="userAddressMap.addressId">
+                        <a [routerLink]="['/address-ckw', userAddressMap.addressId, 'view']">{{userAddressMap.addressId}}</a>
+                    </div>
+                </dd>
+            </dl>
+
+            <button type="submit"
+                    (click)="previousState()"
+                    class="btn btn-info">
+                <fa-icon [icon]="'arrow-left'"></fa-icon>&nbsp;<span> Back</span>
+            </button>
+
+            <button type="button"
+                    [routerLink]="['/user-address-map-ckw', userAddressMap.id, 'edit']"
+                    class="btn btn-primary">
+                <fa-icon [icon]="'pencil-alt'"></fa-icon>&nbsp;<span> Edit</span>
+            </button>
+        </div>
+    </div>
+</div>

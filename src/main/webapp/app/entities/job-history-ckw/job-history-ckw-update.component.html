@@ -1,0 +1,68 @@
+<div class="row justify-content-center">
+    <div class="col-8">
+        <form name="editForm" role="form" novalidate (ngSubmit)="save()" #editForm="ngForm">
+            <h2 id="jhi-job-history-ckw-heading">Create or edit a Job History</h2>
+            <div>
+                <jhi-alert-error></jhi-alert-error>
+                <div class="form-group" [hidden]="!jobHistory.id">
+                    <label for="id">ID</label>
+                    <input type="text" class="form-control" id="id" name="id"
+                        [(ngModel)]="jobHistory.id" readonly />
+                </div>
+                <div class="form-group">
+                    <label class="form-control-label" for="field_startDate">Start Date</label>
+                    <div class="d-flex">
+                        <input id="field_startDate" type="datetime-local" class="form-control" name="startDate" [(ngModel)]="startDate" placeholder="YYYY-MM-DD HH:mm"
+                        />
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label class="form-control-label" for="field_endDate">End Date</label>
+                    <div class="d-flex">
+                        <input id="field_endDate" type="datetime-local" class="form-control" name="endDate" [(ngModel)]="endDate" placeholder="YYYY-MM-DD HH:mm"
+                        />
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label class="form-control-label" for="field_jobStatus">Job Status</label>
+                    <select class="form-control" name="jobStatus" [(ngModel)]="jobHistory.jobStatus" id="field_jobStatus" >
+                        <option value="NOT_STARTED">NOT_STARTED</option>
+                        <option value="PROCESSING">PROCESSING</option>
+                        <option value="COMPLETE">COMPLETE</option>
+                        <option value="ASSIGNED">ASSIGNED</option>
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <label class="form-control-label" for="field_payment">Payment</label>
+                    <select class="form-control" id="field_payment" name="payment" [(ngModel)]="jobHistory.paymentId">
+                        <option [ngValue]="null"></option>
+                        <option [ngValue]="paymentOption.id" *ngFor="let paymentOption of payments; trackBy: trackPaymentById">{{paymentOption.id}}</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label class="form-control-label" for="field_contractorService">Contractor Service</label>
+                    <select class="form-control" id="field_contractorService" name="contractorService" [(ngModel)]="jobHistory.contractorServiceId">
+                        <option [ngValue]="null"></option>
+                        <option [ngValue]="contractorServiceOption.id" *ngFor="let contractorServiceOption of contractorservices; trackBy: trackContractorServiceById">{{contractorServiceOption.id}}</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label class="form-control-label" for="field_userAddressMap">User Address Map</label>
+                    <select class="form-control" id="field_userAddressMap" name="userAddressMap" [(ngModel)]="jobHistory.userAddressMapId">
+                        <option [ngValue]="null"></option>
+                        <option [ngValue]="userAddressMapOption.id" *ngFor="let userAddressMapOption of useraddressmaps; trackBy: trackUserAddressMapById">{{userAddressMapOption.id}}</option>
+                    </select>
+                </div>
+            </div>
+            <div>
+                <button type="button" id="cancel-save" class="btn btn-secondary"  (click)="previousState()">
+                    <fa-icon [icon]="'ban'"></fa-icon>&nbsp;<span>Cancel</span>
+                </button>
+                <button type="submit" id="save-entity" [disabled]="editForm.form.invalid || isSaving" class="btn btn-primary">
+                    <fa-icon [icon]="'save'"></fa-icon>&nbsp;<span>Save</span>
+                </button>
+            </div>
+        </form>
+    </div>
+</div>

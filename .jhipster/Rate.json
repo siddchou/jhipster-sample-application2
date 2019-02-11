@@ -1,0 +1,32 @@
+{
+    "name": "Rate",
+    "fields": [
+        {
+            "fieldName": "rateName",
+            "fieldType": "String"
+        },
+        {
+            "fieldName": "rateDesc",
+            "fieldType": "String"
+        },
+        {
+            "fieldName": "fullRate",
+            "fieldType": "Integer"
+        },
+        {
+            "fieldName": "idleRate",
+            "fieldType": "Integer"
+        }
+    ],
+    "relationships": [],
+    "changelogDate": "20190211154350",
+    "entityTableName": "rate",
+    "dto": "mapstruct",
+    "pagination": "pagination",
+    "service": "serviceImpl",
+    "jpaMetamodelFiltering": false,
+    "fluentMethods": true,
+    "clientRootFolder": "",
+    "applications": "*",
+    "angularJSSuffix": "ckw"
+}

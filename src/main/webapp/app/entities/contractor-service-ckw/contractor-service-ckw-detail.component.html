@@ -1,0 +1,47 @@
+<div class="row justify-content-center">
+    <div class="col-8">
+        <div *ngIf="contractorService">
+            <h2><span>Contractor Service</span> {{contractorService.id}}</h2>
+            <hr>
+            <jhi-alert-error></jhi-alert-error>
+            <dl class="row-md jh-entity-details">
+                <dt><span>Is Verified</span></dt>
+                <dd>
+                    <span>{{contractorService.isVerified}}</span>
+                </dd>
+                <dt><span>Start Date</span></dt>
+                <dd>
+                    <span>{{contractorService.startDate}}</span>
+                </dd>
+                <dt><span>End Date</span></dt>
+                <dd>
+                    <span>{{contractorService.endDate}}</span>
+                </dd>
+                <dt><span>Contractor</span></dt>
+                <dd>
+                    <div *ngIf="contractorService.contractorId">
+                        <a [routerLink]="['/contractor-ckw', contractorService.contractorId, 'view']">{{contractorService.contractorId}}</a>
+                    </div>
+                </dd>
+                <dt><span>Services</span></dt>
+                <dd>
+                    <div *ngIf="contractorService.servicesId">
+                        <a [routerLink]="['/services-ckw', contractorService.servicesId, 'view']">{{contractorService.servicesId}}</a>
+                    </div>
+                </dd>
+            </dl>
+
+            <button type="submit"
+                    (click)="previousState()"
+                    class="btn btn-info">
+                <fa-icon [icon]="'arrow-left'"></fa-icon>&nbsp;<span> Back</span>
+            </button>
+
+            <button type="button"
+                    [routerLink]="['/contractor-service-ckw', contractorService.id, 'edit']"
+                    class="btn btn-primary">
+                <fa-icon [icon]="'pencil-alt'"></fa-icon>&nbsp;<span> Edit</span>
+            </button>
+        </div>
+    </div>
+</div>

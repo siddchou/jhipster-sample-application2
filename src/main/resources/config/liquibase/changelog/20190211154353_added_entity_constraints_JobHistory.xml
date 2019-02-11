@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="utf-8"?>
+<databaseChangeLog
+    xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.5.xsd">
+    <!--
+        Added the constraints for entity JobHistory.
+    -->
+    <changeSet id="20190211154353-2" author="jhipster">
+        
+        <addForeignKeyConstraint baseColumnNames="payment_id"
+                                 baseTableName="job_history"
+                                 constraintName="fk_job_history_payment_id"
+                                 referencedColumnNames="id"
+                                 referencedTableName="payment"/>
+
+        <addForeignKeyConstraint baseColumnNames="contractor_service_id"
+                                 baseTableName="job_history"
+                                 constraintName="fk_job_history_contractor_service_id"
+                                 referencedColumnNames="id"
+                                 referencedTableName="contractor_service"/>
+
+        <addForeignKeyConstraint baseColumnNames="user_address_map_id"
+                                 baseTableName="job_history"
+                                 constraintName="fk_job_history_user_address_map_id"
+                                 referencedColumnNames="id"
+                                 referencedTableName="user_address_map"/>
+
+    </changeSet>
+</databaseChangeLog>
