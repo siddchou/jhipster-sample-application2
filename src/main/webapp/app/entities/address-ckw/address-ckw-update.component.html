@@ -1,0 +1,80 @@
+<div class="row justify-content-center">
+    <div class="col-8">
+        <form name="editForm" role="form" novalidate (ngSubmit)="save()" #editForm="ngForm">
+            <h2 id="jhi-address-ckw-heading">Create or edit a Address</h2>
+            <div>
+                <jhi-alert-error></jhi-alert-error>
+                <div class="form-group" [hidden]="!address.id">
+                    <label for="id">ID</label>
+                    <input type="text" class="form-control" id="id" name="id"
+                        [(ngModel)]="address.id" readonly />
+                </div>
+                <div class="form-group">
+                    <label class="form-control-label" for="field_addressNickName">Address Nick Name</label>
+                    <input type="text" class="form-control" name="addressNickName" id="field_addressNickName"
+                        [(ngModel)]="address.addressNickName" />
+                </div>
+                <div class="form-group">
+                    <label class="form-control-label" for="field_addressLine1">Address Line 1</label>
+                    <input type="text" class="form-control" name="addressLine1" id="field_addressLine1"
+                        [(ngModel)]="address.addressLine1" />
+                </div>
+                <div class="form-group">
+                    <label class="form-control-label" for="field_addressLine2">Address Line 2</label>
+                    <input type="text" class="form-control" name="addressLine2" id="field_addressLine2"
+                        [(ngModel)]="address.addressLine2" />
+                </div>
+                <div class="form-group">
+                    <label class="form-control-label" for="field_city">City</label>
+                    <input type="text" class="form-control" name="city" id="field_city"
+                        [(ngModel)]="address.city" />
+                </div>
+                <div class="form-group">
+                    <label class="form-control-label" for="field_state">State</label>
+                    <input type="text" class="form-control" name="state" id="field_state"
+                        [(ngModel)]="address.state" />
+                </div>
+                <div class="form-group">
+                    <label class="form-control-label" for="field_country">Country</label>
+                    <input type="text" class="form-control" name="country" id="field_country"
+                        [(ngModel)]="address.country" />
+                </div>
+                <div class="form-group">
+                    <label class="form-control-label" for="field_postalCode">Postal Code</label>
+                    <input type="text" class="form-control" name="postalCode" id="field_postalCode"
+                        [(ngModel)]="address.postalCode" />
+                </div>
+                <div class="form-group">
+                    <label class="form-control-label" for="field_startDate">Start Date</label>
+                    <div class="d-flex">
+                        <input id="field_startDate" type="datetime-local" class="form-control" name="startDate" [(ngModel)]="startDate" placeholder="YYYY-MM-DD HH:mm"
+                        />
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label class="form-control-label" for="field_endDate">End Date</label>
+                    <div class="d-flex">
+                        <input id="field_endDate" type="datetime-local" class="form-control" name="endDate" [(ngModel)]="endDate" placeholder="YYYY-MM-DD HH:mm"
+                        />
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label class="form-control-label" for="field_appUser">App User</label>
+                    <select class="form-control" id="field_appUser" name="appUser" [(ngModel)]="address.appUserId" >
+                        <option [ngValue]="null"></option>
+                        <option [ngValue]="appUserOption.id" *ngFor="let appUserOption of appusers; trackBy: trackAppUserById">{{appUserOption.id}}</option>
+                    </select>
+                </div>
+            </div>
+            <div>
+                <button type="button" id="cancel-save" class="btn btn-secondary"  (click)="previousState()">
+                    <fa-icon [icon]="'ban'"></fa-icon>&nbsp;<span>Cancel</span>
+                </button>
+                <button type="submit" id="save-entity" [disabled]="editForm.form.invalid || isSaving" class="btn btn-primary">
+                    <fa-icon [icon]="'save'"></fa-icon>&nbsp;<span>Save</span>
+                </button>
+            </div>
+        </form>
+    </div>
+</div>

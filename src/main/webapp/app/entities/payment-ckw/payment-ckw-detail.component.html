@@ -1,0 +1,47 @@
+<div class="row justify-content-center">
+    <div class="col-8">
+        <div *ngIf="payment">
+            <h2><span>Payment</span> {{payment.id}}</h2>
+            <hr>
+            <jhi-alert-error></jhi-alert-error>
+            <dl class="row-md jh-entity-details">
+                <dt><span>Total Payment Amount</span></dt>
+                <dd>
+                    <span>{{payment.totalPaymentAmount}}</span>
+                </dd>
+                <dt><span>Payment Type</span></dt>
+                <dd>
+                    <span>{{payment.paymentType}}</span>
+                </dd>
+                <dt><span>Contractor Amount</span></dt>
+                <dd>
+                    <span>{{payment.contractorAmount}}</span>
+                </dd>
+                <dt><span>Business Amount</span></dt>
+                <dd>
+                    <span>{{payment.businessAmount}}</span>
+                </dd>
+                <dt><span>Start Date</span></dt>
+                <dd>
+                    <span>{{payment.startDate}}</span>
+                </dd>
+                <dt><span>End Date</span></dt>
+                <dd>
+                    <span>{{payment.endDate}}</span>
+                </dd>
+            </dl>
+
+            <button type="submit"
+                    (click)="previousState()"
+                    class="btn btn-info">
+                <fa-icon [icon]="'arrow-left'"></fa-icon>&nbsp;<span> Back</span>
+            </button>
+
+            <button type="button"
+                    [routerLink]="['/payment-ckw', payment.id, 'edit']"
+                    class="btn btn-primary">
+                <fa-icon [icon]="'pencil-alt'"></fa-icon>&nbsp;<span> Edit</span>
+            </button>
+        </div>
+    </div>
+</div>

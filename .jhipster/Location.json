@@ -1,0 +1,24 @@
+{
+    "name": "Location",
+    "fields": [
+        {
+            "fieldName": "city",
+            "fieldType": "String"
+        },
+        {
+            "fieldName": "province",
+            "fieldType": "String"
+        }
+    ],
+    "relationships": [],
+    "changelogDate": "20190211154349",
+    "entityTableName": "location",
+    "dto": "mapstruct",
+    "pagination": "pagination",
+    "service": "serviceImpl",
+    "jpaMetamodelFiltering": false,
+    "fluentMethods": true,
+    "clientRootFolder": "",
+    "applications": "*",
+    "angularJSSuffix": "ckw"
+}

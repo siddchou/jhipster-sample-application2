@@ -1,0 +1,41 @@
+{
+    "name": "UserAddressMap",
+    "fields": [
+        {
+            "fieldName": "startDate",
+            "fieldType": "Instant"
+        },
+        {
+            "fieldName": "endDate",
+            "fieldType": "Instant"
+        }
+    ],
+    "relationships": [
+        {
+            "relationshipType": "one-to-one",
+            "relationshipName": "appUser",
+            "otherEntityName": "appUser",
+            "otherEntityField": "id",
+            "ownerSide": true,
+            "otherEntityRelationshipName": "userAddressMap"
+        },
+        {
+            "relationshipType": "one-to-one",
+            "relationshipName": "address",
+            "otherEntityName": "address",
+            "otherEntityField": "id",
+            "ownerSide": true,
+            "otherEntityRelationshipName": "userAddressMap"
+        }
+    ],
+    "changelogDate": "20190211154347",
+    "entityTableName": "user_address_map",
+    "dto": "mapstruct",
+    "pagination": "pagination",
+    "service": "serviceImpl",
+    "jpaMetamodelFiltering": false,
+    "fluentMethods": true,
+    "clientRootFolder": "",
+    "applications": "*",
+    "angularJSSuffix": "ckw"
+}

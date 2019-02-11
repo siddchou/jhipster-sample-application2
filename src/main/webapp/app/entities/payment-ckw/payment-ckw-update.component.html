@@ -1,0 +1,61 @@
+<div class="row justify-content-center">
+    <div class="col-8">
+        <form name="editForm" role="form" novalidate (ngSubmit)="save()" #editForm="ngForm">
+            <h2 id="jhi-payment-ckw-heading">Create or edit a Payment</h2>
+            <div>
+                <jhi-alert-error></jhi-alert-error>
+                <div class="form-group" [hidden]="!payment.id">
+                    <label for="id">ID</label>
+                    <input type="text" class="form-control" id="id" name="id"
+                        [(ngModel)]="payment.id" readonly />
+                </div>
+                <div class="form-group">
+                    <label class="form-control-label" for="field_totalPaymentAmount">Total Payment Amount</label>
+                    <input type="number" class="form-control" name="totalPaymentAmount" id="field_totalPaymentAmount"
+                        [(ngModel)]="payment.totalPaymentAmount" />
+                </div>
+                <div class="form-group">
+                    <label class="form-control-label" for="field_paymentType">Payment Type</label>
+                    <select class="form-control" name="paymentType" [(ngModel)]="payment.paymentType" id="field_paymentType" >
+                        <option value="DEBIT">DEBIT</option>
+                        <option value="CREDIT">CREDIT</option>
+                        <option value="PAYPAL">PAYPAL</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label class="form-control-label" for="field_contractorAmount">Contractor Amount</label>
+                    <input type="number" class="form-control" name="contractorAmount" id="field_contractorAmount"
+                        [(ngModel)]="payment.contractorAmount" />
+                </div>
+                <div class="form-group">
+                    <label class="form-control-label" for="field_businessAmount">Business Amount</label>
+                    <input type="number" class="form-control" name="businessAmount" id="field_businessAmount"
+                        [(ngModel)]="payment.businessAmount" />
+                </div>
+                <div class="form-group">
+                    <label class="form-control-label" for="field_startDate">Start Date</label>
+                    <div class="d-flex">
+                        <input id="field_startDate" type="datetime-local" class="form-control" name="startDate" [(ngModel)]="startDate" placeholder="YYYY-MM-DD HH:mm"
+                        />
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label class="form-control-label" for="field_endDate">End Date</label>
+                    <div class="d-flex">
+                        <input id="field_endDate" type="datetime-local" class="form-control" name="endDate" [(ngModel)]="endDate" placeholder="YYYY-MM-DD HH:mm"
+                        />
+                    </div>
+                </div>
+
+            </div>
+            <div>
+                <button type="button" id="cancel-save" class="btn btn-secondary"  (click)="previousState()">
+                    <fa-icon [icon]="'ban'"></fa-icon>&nbsp;<span>Cancel</span>
+                </button>
+                <button type="submit" id="save-entity" [disabled]="editForm.form.invalid || isSaving" class="btn btn-primary">
+                    <fa-icon [icon]="'save'"></fa-icon>&nbsp;<span>Save</span>
+                </button>
+            </div>
+        </form>
+    </div>
+</div>

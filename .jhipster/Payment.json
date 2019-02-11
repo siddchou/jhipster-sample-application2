@@ -1,0 +1,41 @@
+{
+    "name": "Payment",
+    "fields": [
+        {
+            "fieldName": "totalPaymentAmount",
+            "fieldType": "Double"
+        },
+        {
+            "fieldName": "paymentType",
+            "fieldType": "PaymentType",
+            "fieldValues": "DEBIT,CREDIT,PAYPAL"
+        },
+        {
+            "fieldName": "contractorAmount",
+            "fieldType": "Double"
+        },
+        {
+            "fieldName": "businessAmount",
+            "fieldType": "Double"
+        },
+        {
+            "fieldName": "startDate",
+            "fieldType": "Instant"
+        },
+        {
+            "fieldName": "endDate",
+            "fieldType": "Instant"
+        }
+    ],
+    "relationships": [],
+    "changelogDate": "20190211154355",
+    "entityTableName": "payment",
+    "dto": "mapstruct",
+    "pagination": "pagination",
+    "service": "serviceImpl",
+    "jpaMetamodelFiltering": false,
+    "fluentMethods": true,
+    "clientRootFolder": "",
+    "applications": "*",
+    "angularJSSuffix": "ckw"
+}

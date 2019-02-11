@@ -1,0 +1,49 @@
+{
+    "name": "Services",
+    "fields": [
+        {
+            "fieldName": "serviceName",
+            "fieldType": "String"
+        },
+        {
+            "fieldName": "serviceDescription",
+            "fieldType": "String"
+        }
+    ],
+    "relationships": [
+        {
+            "relationshipType": "one-to-one",
+            "relationshipName": "rate",
+            "otherEntityName": "rate",
+            "otherEntityField": "id",
+            "ownerSide": true,
+            "otherEntityRelationshipName": "services"
+        },
+        {
+            "relationshipType": "one-to-one",
+            "relationshipName": "category",
+            "otherEntityName": "category",
+            "otherEntityField": "id",
+            "ownerSide": true,
+            "otherEntityRelationshipName": "services"
+        },
+        {
+            "relationshipType": "one-to-one",
+            "relationshipName": "location",
+            "otherEntityName": "location",
+            "otherEntityField": "id",
+            "ownerSide": true,
+            "otherEntityRelationshipName": "services"
+        }
+    ],
+    "changelogDate": "20190211154345",
+    "entityTableName": "services",
+    "dto": "mapstruct",
+    "pagination": "pagination",
+    "service": "serviceImpl",
+    "jpaMetamodelFiltering": false,
+    "fluentMethods": true,
+    "clientRootFolder": "",
+    "applications": "*",
+    "angularJSSuffix": "ckw"
+}

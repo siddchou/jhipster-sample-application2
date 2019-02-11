@@ -1,0 +1,35 @@
+{
+    "name": "JobTimeLog",
+    "fields": [
+        {
+            "fieldName": "startDate",
+            "fieldType": "Instant"
+        },
+        {
+            "fieldName": "endDate",
+            "fieldType": "Instant"
+        },
+        {
+            "fieldName": "isValidated",
+            "fieldType": "Boolean"
+        }
+    ],
+    "relationships": [
+        {
+            "relationshipName": "jobHistory",
+            "otherEntityName": "jobHistory",
+            "relationshipType": "many-to-one",
+            "otherEntityField": "id"
+        }
+    ],
+    "changelogDate": "20190211154354",
+    "entityTableName": "job_time_log",
+    "dto": "mapstruct",
+    "pagination": "pagination",
+    "service": "serviceImpl",
+    "jpaMetamodelFiltering": false,
+    "fluentMethods": true,
+    "clientRootFolder": "",
+    "applications": "*",
+    "angularJSSuffix": "ckw"
+}

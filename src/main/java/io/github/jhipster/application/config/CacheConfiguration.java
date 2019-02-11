@@ -38,6 +38,20 @@ public class CacheConfiguration {
             cm.createCache(io.github.jhipster.application.domain.User.class.getName(), jcacheConfiguration);
             cm.createCache(io.github.jhipster.application.domain.Authority.class.getName(), jcacheConfiguration);
             cm.createCache(io.github.jhipster.application.domain.User.class.getName() + ".authorities", jcacheConfiguration);
+            cm.createCache(io.github.jhipster.application.domain.Category.class.getName(), jcacheConfiguration);
+            cm.createCache(io.github.jhipster.application.domain.Services.class.getName(), jcacheConfiguration);
+            cm.createCache(io.github.jhipster.application.domain.ContractorService.class.getName(), jcacheConfiguration);
+            cm.createCache(io.github.jhipster.application.domain.UserAddressMap.class.getName(), jcacheConfiguration);
+            cm.createCache(io.github.jhipster.application.domain.Contractor.class.getName(), jcacheConfiguration);
+            cm.createCache(io.github.jhipster.application.domain.Location.class.getName(), jcacheConfiguration);
+            cm.createCache(io.github.jhipster.application.domain.Rate.class.getName(), jcacheConfiguration);
+            cm.createCache(io.github.jhipster.application.domain.AppUser.class.getName(), jcacheConfiguration);
+            cm.createCache(io.github.jhipster.application.domain.AppUser.class.getName() + ".addresses", jcacheConfiguration);
+            cm.createCache(io.github.jhipster.application.domain.Address.class.getName(), jcacheConfiguration);
+            cm.createCache(io.github.jhipster.application.domain.JobHistory.class.getName(), jcacheConfiguration);
+            cm.createCache(io.github.jhipster.application.domain.JobHistory.class.getName() + ".jobTimeLogs", jcacheConfiguration);
+            cm.createCache(io.github.jhipster.application.domain.JobTimeLog.class.getName(), jcacheConfiguration);
+            cm.createCache(io.github.jhipster.application.domain.Payment.class.getName(), jcacheConfiguration);
             // jhipster-needle-ehcache-add-entry
         };
     }
