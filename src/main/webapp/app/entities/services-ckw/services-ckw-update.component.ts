@@ -42,7 +42,7 @@ export class ServicesCkwUpdateComponent implements OnInit {
             this.services = services;
         });
         this.rateService
-            .query({ filter: 'services-is-null' })
+            .query({ 'servicesId.specified': 'false' })
             .pipe(
                 filter((mayBeOk: HttpResponse<IRateCkw[]>) => mayBeOk.ok),
                 map((response: HttpResponse<IRateCkw[]>) => response.body)
@@ -67,7 +67,7 @@ export class ServicesCkwUpdateComponent implements OnInit {
                 (res: HttpErrorResponse) => this.onError(res.message)
             );
         this.categoryService
-            .query({ filter: 'services-is-null' })
+            .query({ 'servicesId.specified': 'false' })
             .pipe(
                 filter((mayBeOk: HttpResponse<ICategoryCkw[]>) => mayBeOk.ok),
                 map((response: HttpResponse<ICategoryCkw[]>) => response.body)
@@ -92,7 +92,7 @@ export class ServicesCkwUpdateComponent implements OnInit {
                 (res: HttpErrorResponse) => this.onError(res.message)
             );
         this.locationService
-            .query({ filter: 'services-is-null' })
+            .query({ 'servicesId.specified': 'false' })
             .pipe(
                 filter((mayBeOk: HttpResponse<ILocationCkw[]>) => mayBeOk.ok),
                 map((response: HttpResponse<ILocationCkw[]>) => response.body)

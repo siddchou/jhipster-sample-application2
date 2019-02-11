@@ -3,12 +3,17 @@ package io.github.jhipster.application.web.rest;
 import io.github.jhipster.application.JhipsterSampleApplication2App;
 
 import io.github.jhipster.application.domain.Services;
+import io.github.jhipster.application.domain.Rate;
+import io.github.jhipster.application.domain.Category;
+import io.github.jhipster.application.domain.Location;
 import io.github.jhipster.application.repository.ServicesRepository;
 import io.github.jhipster.application.repository.search.ServicesSearchRepository;
 import io.github.jhipster.application.service.ServicesService;
 import io.github.jhipster.application.service.dto.ServicesDTO;
 import io.github.jhipster.application.service.mapper.ServicesMapper;
 import io.github.jhipster.application.web.rest.errors.ExceptionTranslator;
+import io.github.jhipster.application.service.dto.ServicesCriteria;
+import io.github.jhipster.application.service.ServicesQueryService;
 
 import org.junit.Before;
 import org.junit.Test;
@@ -73,6 +78,9 @@ public class ServicesResourceIntTest {
     private ServicesSearchRepository mockServicesSearchRepository;
 
     @Autowired
+    private ServicesQueryService servicesQueryService;
+
+    @Autowired
     private MappingJackson2HttpMessageConverter jacksonMessageConverter;
 
     @Autowired
@@ -94,7 +102,7 @@ public class ServicesResourceIntTest {
     @Before
     public void setup() {
         MockitoAnnotations.initMocks(this);
-        final ServicesResource servicesResource = new ServicesResource(servicesService);
+        final ServicesResource servicesResource = new ServicesResource(servicesService, servicesQueryService);
         this.restServicesMockMvc = MockMvcBuilders.standaloneSetup(servicesResource)
             .setCustomArgumentResolvers(pageableArgumentResolver)
             .setControllerAdvice(exceptionTranslator)
@@ -196,6 +204,176 @@ public class ServicesResourceIntTest {
             .andExpect(jsonPath("$.serviceName").value(DEFAULT_SERVICE_NAME.toString()))
             .andExpect(jsonPath("$.serviceDescription").value(DEFAULT_SERVICE_DESCRIPTION.toString()));
     }
+
+    @Test
+    @Transactional
+    public void getAllServicesByServiceNameIsEqualToSomething() throws Exception {
+        // Initialize the database
+        servicesRepository.saveAndFlush(services);
+
+        // Get all the servicesList where serviceName equals to DEFAULT_SERVICE_NAME
+        defaultServicesShouldBeFound("serviceName.equals=" + DEFAULT_SERVICE_NAME);
+
+        // Get all the servicesList where serviceName equals to UPDATED_SERVICE_NAME
+        defaultServicesShouldNotBeFound("serviceName.equals=" + UPDATED_SERVICE_NAME);
+    }
+
+    @Test
+    @Transactional
+    public void getAllServicesByServiceNameIsInShouldWork() throws Exception {
+        // Initialize the database
+        servicesRepository.saveAndFlush(services);
+
+        // Get all the servicesList where serviceName in DEFAULT_SERVICE_NAME or UPDATED_SERVICE_NAME
+        defaultServicesShouldBeFound("serviceName.in=" + DEFAULT_SERVICE_NAME + "," + UPDATED_SERVICE_NAME);
+
+        // Get all the servicesList where serviceName equals to UPDATED_SERVICE_NAME
+        defaultServicesShouldNotBeFound("serviceName.in=" + UPDATED_SERVICE_NAME);
+    }
+
+    @Test
+    @Transactional
+    public void getAllServicesByServiceNameIsNullOrNotNull() throws Exception {
+        // Initialize the database
+        servicesRepository.saveAndFlush(services);
+
+        // Get all the servicesList where serviceName is not null
+        defaultServicesShouldBeFound("serviceName.specified=true");
+
+        // Get all the servicesList where serviceName is null
+        defaultServicesShouldNotBeFound("serviceName.specified=false");
+    }
+
+    @Test
+    @Transactional
+    public void getAllServicesByServiceDescriptionIsEqualToSomething() throws Exception {
+        // Initialize the database
+        servicesRepository.saveAndFlush(services);
+
+        // Get all the servicesList where serviceDescription equals to DEFAULT_SERVICE_DESCRIPTION
+        defaultServicesShouldBeFound("serviceDescription.equals=" + DEFAULT_SERVICE_DESCRIPTION);
+
+        // Get all the servicesList where serviceDescription equals to UPDATED_SERVICE_DESCRIPTION
+        defaultServicesShouldNotBeFound("serviceDescription.equals=" + UPDATED_SERVICE_DESCRIPTION);
+    }
+
+    @Test
+    @Transactional
+    public void getAllServicesByServiceDescriptionIsInShouldWork() throws Exception {
+        // Initialize the database
+        servicesRepository.saveAndFlush(services);
+
+        // Get all the servicesList where serviceDescription in DEFAULT_SERVICE_DESCRIPTION or UPDATED_SERVICE_DESCRIPTION
+        defaultServicesShouldBeFound("serviceDescription.in=" + DEFAULT_SERVICE_DESCRIPTION + "," + UPDATED_SERVICE_DESCRIPTION);
+
+        // Get all the servicesList where serviceDescription equals to UPDATED_SERVICE_DESCRIPTION
+        defaultServicesShouldNotBeFound("serviceDescription.in=" + UPDATED_SERVICE_DESCRIPTION);
+    }
+
+    @Test
+    @Transactional
+    public void getAllServicesByServiceDescriptionIsNullOrNotNull() throws Exception {
+        // Initialize the database
+        servicesRepository.saveAndFlush(services);
+
+        // Get all the servicesList where serviceDescription is not null
+        defaultServicesShouldBeFound("serviceDescription.specified=true");
+
+        // Get all the servicesList where serviceDescription is null
+        defaultServicesShouldNotBeFound("serviceDescription.specified=false");
+    }
+
+    @Test
+    @Transactional
+    public void getAllServicesByRateIsEqualToSomething() throws Exception {
+        // Initialize the database
+        Rate rate = RateResourceIntTest.createEntity(em);
+        em.persist(rate);
+        em.flush();
+        services.setRate(rate);
+        servicesRepository.saveAndFlush(services);
+        Long rateId = rate.getId();
+
+        // Get all the servicesList where rate equals to rateId
+        defaultServicesShouldBeFound("rateId.equals=" + rateId);
+
+        // Get all the servicesList where rate equals to rateId + 1
+        defaultServicesShouldNotBeFound("rateId.equals=" + (rateId + 1));
+    }
+
+
+    @Test
+    @Transactional
+    public void getAllServicesByCategoryIsEqualToSomething() throws Exception {
+        // Initialize the database
+        Category category = CategoryResourceIntTest.createEntity(em);
+        em.persist(category);
+        em.flush();
+        services.setCategory(category);
+        servicesRepository.saveAndFlush(services);
+        Long categoryId = category.getId();
+
+        // Get all the servicesList where category equals to categoryId
+        defaultServicesShouldBeFound("categoryId.equals=" + categoryId);
+
+        // Get all the servicesList where category equals to categoryId + 1
+        defaultServicesShouldNotBeFound("categoryId.equals=" + (categoryId + 1));
+    }
+
+
+    @Test
+    @Transactional
+    public void getAllServicesByLocationIsEqualToSomething() throws Exception {
+        // Initialize the database
+        Location location = LocationResourceIntTest.createEntity(em);
+        em.persist(location);
+        em.flush();
+        services.setLocation(location);
+        servicesRepository.saveAndFlush(services);
+        Long locationId = location.getId();
+
+        // Get all the servicesList where location equals to locationId
+        defaultServicesShouldBeFound("locationId.equals=" + locationId);
+
+        // Get all the servicesList where location equals to locationId + 1
+        defaultServicesShouldNotBeFound("locationId.equals=" + (locationId + 1));
+    }
+
+    /**
+     * Executes the search, and checks that the default entity is returned
+     */
+    private void defaultServicesShouldBeFound(String filter) throws Exception {
+        restServicesMockMvc.perform(get("/api/services?sort=id,desc&" + filter))
+            .andExpect(status().isOk())
+            .andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8_VALUE))
+            .andExpect(jsonPath("$.[*].id").value(hasItem(services.getId().intValue())))
+            .andExpect(jsonPath("$.[*].serviceName").value(hasItem(DEFAULT_SERVICE_NAME)))
+            .andExpect(jsonPath("$.[*].serviceDescription").value(hasItem(DEFAULT_SERVICE_DESCRIPTION)));
+
+        // Check, that the count call also returns 1
+        restServicesMockMvc.perform(get("/api/services/count?sort=id,desc&" + filter))
+            .andExpect(status().isOk())
+            .andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8_VALUE))
+            .andExpect(content().string("1"));
+    }
+
+    /**
+     * Executes the search, and checks that the default entity is not returned
+     */
+    private void defaultServicesShouldNotBeFound(String filter) throws Exception {
+        restServicesMockMvc.perform(get("/api/services?sort=id,desc&" + filter))
+            .andExpect(status().isOk())
+            .andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8_VALUE))
+            .andExpect(jsonPath("$").isArray())
+            .andExpect(jsonPath("$").isEmpty());
+
+        // Check, that the count call also returns 0
+        restServicesMockMvc.perform(get("/api/services/count?sort=id,desc&" + filter))
+            .andExpect(status().isOk())
+            .andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8_VALUE))
+            .andExpect(content().string("0"));
+    }
+
 
     @Test
     @Transactional

@@ -9,6 +9,8 @@ import io.github.jhipster.application.service.LocationService;
 import io.github.jhipster.application.service.dto.LocationDTO;
 import io.github.jhipster.application.service.mapper.LocationMapper;
 import io.github.jhipster.application.web.rest.errors.ExceptionTranslator;
+import io.github.jhipster.application.service.dto.LocationCriteria;
+import io.github.jhipster.application.service.LocationQueryService;
 
 import org.junit.Before;
 import org.junit.Test;
@@ -73,6 +75,9 @@ public class LocationResourceIntTest {
     private LocationSearchRepository mockLocationSearchRepository;
 
     @Autowired
+    private LocationQueryService locationQueryService;
+
+    @Autowired
     private MappingJackson2HttpMessageConverter jacksonMessageConverter;
 
     @Autowired
@@ -94,7 +99,7 @@ public class LocationResourceIntTest {
     @Before
     public void setup() {
         MockitoAnnotations.initMocks(this);
-        final LocationResource locationResource = new LocationResource(locationService);
+        final LocationResource locationResource = new LocationResource(locationService, locationQueryService);
         this.restLocationMockMvc = MockMvcBuilders.standaloneSetup(locationResource)
             .setCustomArgumentResolvers(pageableArgumentResolver)
             .setControllerAdvice(exceptionTranslator)
@@ -196,6 +201,119 @@ public class LocationResourceIntTest {
             .andExpect(jsonPath("$.city").value(DEFAULT_CITY.toString()))
             .andExpect(jsonPath("$.province").value(DEFAULT_PROVINCE.toString()));
     }
+
+    @Test
+    @Transactional
+    public void getAllLocationsByCityIsEqualToSomething() throws Exception {
+        // Initialize the database
+        locationRepository.saveAndFlush(location);
+
+        // Get all the locationList where city equals to DEFAULT_CITY
+        defaultLocationShouldBeFound("city.equals=" + DEFAULT_CITY);
+
+        // Get all the locationList where city equals to UPDATED_CITY
+        defaultLocationShouldNotBeFound("city.equals=" + UPDATED_CITY);
+    }
+
+    @Test
+    @Transactional
+    public void getAllLocationsByCityIsInShouldWork() throws Exception {
+        // Initialize the database
+        locationRepository.saveAndFlush(location);
+
+        // Get all the locationList where city in DEFAULT_CITY or UPDATED_CITY
+        defaultLocationShouldBeFound("city.in=" + DEFAULT_CITY + "," + UPDATED_CITY);
+
+        // Get all the locationList where city equals to UPDATED_CITY
+        defaultLocationShouldNotBeFound("city.in=" + UPDATED_CITY);
+    }
+
+    @Test
+    @Transactional
+    public void getAllLocationsByCityIsNullOrNotNull() throws Exception {
+        // Initialize the database
+        locationRepository.saveAndFlush(location);
+
+        // Get all the locationList where city is not null
+        defaultLocationShouldBeFound("city.specified=true");
+
+        // Get all the locationList where city is null
+        defaultLocationShouldNotBeFound("city.specified=false");
+    }
+
+    @Test
+    @Transactional
+    public void getAllLocationsByProvinceIsEqualToSomething() throws Exception {
+        // Initialize the database
+        locationRepository.saveAndFlush(location);
+
+        // Get all the locationList where province equals to DEFAULT_PROVINCE
+        defaultLocationShouldBeFound("province.equals=" + DEFAULT_PROVINCE);
+
+        // Get all the locationList where province equals to UPDATED_PROVINCE
+        defaultLocationShouldNotBeFound("province.equals=" + UPDATED_PROVINCE);
+    }
+
+    @Test
+    @Transactional
+    public void getAllLocationsByProvinceIsInShouldWork() throws Exception {
+        // Initialize the database
+        locationRepository.saveAndFlush(location);
+
+        // Get all the locationList where province in DEFAULT_PROVINCE or UPDATED_PROVINCE
+        defaultLocationShouldBeFound("province.in=" + DEFAULT_PROVINCE + "," + UPDATED_PROVINCE);
+
+        // Get all the locationList where province equals to UPDATED_PROVINCE
+        defaultLocationShouldNotBeFound("province.in=" + UPDATED_PROVINCE);
+    }
+
+    @Test
+    @Transactional
+    public void getAllLocationsByProvinceIsNullOrNotNull() throws Exception {
+        // Initialize the database
+        locationRepository.saveAndFlush(location);
+
+        // Get all the locationList where province is not null
+        defaultLocationShouldBeFound("province.specified=true");
+
+        // Get all the locationList where province is null
+        defaultLocationShouldNotBeFound("province.specified=false");
+    }
+    /**
+     * Executes the search, and checks that the default entity is returned
+     */
+    private void defaultLocationShouldBeFound(String filter) throws Exception {
+        restLocationMockMvc.perform(get("/api/locations?sort=id,desc&" + filter))
+            .andExpect(status().isOk())
+            .andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8_VALUE))
+            .andExpect(jsonPath("$.[*].id").value(hasItem(location.getId().intValue())))
+            .andExpect(jsonPath("$.[*].city").value(hasItem(DEFAULT_CITY)))
+            .andExpect(jsonPath("$.[*].province").value(hasItem(DEFAULT_PROVINCE)));
+
+        // Check, that the count call also returns 1
+        restLocationMockMvc.perform(get("/api/locations/count?sort=id,desc&" + filter))
+            .andExpect(status().isOk())
+            .andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8_VALUE))
+            .andExpect(content().string("1"));
+    }
+
+    /**
+     * Executes the search, and checks that the default entity is not returned
+     */
+    private void defaultLocationShouldNotBeFound(String filter) throws Exception {
+        restLocationMockMvc.perform(get("/api/locations?sort=id,desc&" + filter))
+            .andExpect(status().isOk())
+            .andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8_VALUE))
+            .andExpect(jsonPath("$").isArray())
+            .andExpect(jsonPath("$").isEmpty());
+
+        // Check, that the count call also returns 0
+        restLocationMockMvc.perform(get("/api/locations/count?sort=id,desc&" + filter))
+            .andExpect(status().isOk())
+            .andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8_VALUE))
+            .andExpect(content().string("0"));
+    }
+
 
     @Test
     @Transactional

@@ -4,6 +4,8 @@ import io.github.jhipster.application.web.rest.errors.BadRequestAlertException;
 import io.github.jhipster.application.web.rest.util.HeaderUtil;
 import io.github.jhipster.application.web.rest.util.PaginationUtil;
 import io.github.jhipster.application.service.dto.RateDTO;
+import io.github.jhipster.application.service.dto.RateCriteria;
+import io.github.jhipster.application.service.RateQueryService;
 import io.github.jhipster.web.util.ResponseUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -36,8 +38,11 @@ public class RateResource {
 
     private final RateService rateService;
 
-    public RateResource(RateService rateService) {
+    private final RateQueryService rateQueryService;
+
+    public RateResource(RateService rateService, RateQueryService rateQueryService) {
         this.rateService = rateService;
+        this.rateQueryService = rateQueryService;
     }
 
     /**
@@ -84,14 +89,27 @@ public class RateResource {
      * GET  /rates : get all the rates.
      *
      * @param pageable the pagination information
+     * @param criteria the criterias which the requested entities should match
      * @return the ResponseEntity with status 200 (OK) and the list of rates in body
      */
     @GetMapping("/rates")
-    public ResponseEntity<List<RateDTO>> getAllRates(Pageable pageable) {
-        log.debug("REST request to get a page of Rates");
-        Page<RateDTO> page = rateService.findAll(pageable);
+    public ResponseEntity<List<RateDTO>> getAllRates(RateCriteria criteria, Pageable pageable) {
+        log.debug("REST request to get Rates by criteria: {}", criteria);
+        Page<RateDTO> page = rateQueryService.findByCriteria(criteria, pageable);
         HttpHeaders headers = PaginationUtil.generatePaginationHttpHeaders(page, "/api/rates");
         return ResponseEntity.ok().headers(headers).body(page.getContent());
+    }
+
+    /**
+    * GET  /rates/count : count all the rates.
+    *
+    * @param criteria the criterias which the requested entities should match
+    * @return the ResponseEntity with status 200 (OK) and the count in body
+    */
+    @GetMapping("/rates/count")
+    public ResponseEntity<Long> countRates(RateCriteria criteria) {
+        log.debug("REST request to count Rates by criteria: {}", criteria);
+        return ResponseEntity.ok().body(rateQueryService.countByCriteria(criteria));
     }
 
     /**

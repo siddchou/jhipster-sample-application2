@@ -10,6 +10,6 @@ import org.springframework.stereotype.Repository;
  */
 @SuppressWarnings("unused")
 @Repository
-public interface UserAddressMapRepository extends JpaRepository<UserAddressMap, Long> {
+public interface UserAddressMapRepository extends JpaRepository<UserAddressMap, Long>, JpaSpecificationExecutor<UserAddressMap> {
 
 }

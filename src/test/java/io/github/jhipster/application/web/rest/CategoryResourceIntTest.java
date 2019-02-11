@@ -9,6 +9,8 @@ import io.github.jhipster.application.service.CategoryService;
 import io.github.jhipster.application.service.dto.CategoryDTO;
 import io.github.jhipster.application.service.mapper.CategoryMapper;
 import io.github.jhipster.application.web.rest.errors.ExceptionTranslator;
+import io.github.jhipster.application.service.dto.CategoryCriteria;
+import io.github.jhipster.application.service.CategoryQueryService;
 
 import org.junit.Before;
 import org.junit.Test;
@@ -73,6 +75,9 @@ public class CategoryResourceIntTest {
     private CategorySearchRepository mockCategorySearchRepository;
 
     @Autowired
+    private CategoryQueryService categoryQueryService;
+
+    @Autowired
     private MappingJackson2HttpMessageConverter jacksonMessageConverter;
 
     @Autowired
@@ -94,7 +99,7 @@ public class CategoryResourceIntTest {
     @Before
     public void setup() {
         MockitoAnnotations.initMocks(this);
-        final CategoryResource categoryResource = new CategoryResource(categoryService);
+        final CategoryResource categoryResource = new CategoryResource(categoryService, categoryQueryService);
         this.restCategoryMockMvc = MockMvcBuilders.standaloneSetup(categoryResource)
             .setCustomArgumentResolvers(pageableArgumentResolver)
             .setControllerAdvice(exceptionTranslator)
@@ -196,6 +201,119 @@ public class CategoryResourceIntTest {
             .andExpect(jsonPath("$.categoryName").value(DEFAULT_CATEGORY_NAME.toString()))
             .andExpect(jsonPath("$.categoryDescription").value(DEFAULT_CATEGORY_DESCRIPTION.toString()));
     }
+
+    @Test
+    @Transactional
+    public void getAllCategoriesByCategoryNameIsEqualToSomething() throws Exception {
+        // Initialize the database
+        categoryRepository.saveAndFlush(category);
+
+        // Get all the categoryList where categoryName equals to DEFAULT_CATEGORY_NAME
+        defaultCategoryShouldBeFound("categoryName.equals=" + DEFAULT_CATEGORY_NAME);
+
+        // Get all the categoryList where categoryName equals to UPDATED_CATEGORY_NAME
+        defaultCategoryShouldNotBeFound("categoryName.equals=" + UPDATED_CATEGORY_NAME);
+    }
+
+    @Test
+    @Transactional
+    public void getAllCategoriesByCategoryNameIsInShouldWork() throws Exception {
+        // Initialize the database
+        categoryRepository.saveAndFlush(category);
+
+        // Get all the categoryList where categoryName in DEFAULT_CATEGORY_NAME or UPDATED_CATEGORY_NAME
+        defaultCategoryShouldBeFound("categoryName.in=" + DEFAULT_CATEGORY_NAME + "," + UPDATED_CATEGORY_NAME);
+
+        // Get all the categoryList where categoryName equals to UPDATED_CATEGORY_NAME
+        defaultCategoryShouldNotBeFound("categoryName.in=" + UPDATED_CATEGORY_NAME);
+    }
+
+    @Test
+    @Transactional
+    public void getAllCategoriesByCategoryNameIsNullOrNotNull() throws Exception {
+        // Initialize the database
+        categoryRepository.saveAndFlush(category);
+
+        // Get all the categoryList where categoryName is not null
+        defaultCategoryShouldBeFound("categoryName.specified=true");
+
+        // Get all the categoryList where categoryName is null
+        defaultCategoryShouldNotBeFound("categoryName.specified=false");
+    }
+
+    @Test
+    @Transactional
+    public void getAllCategoriesByCategoryDescriptionIsEqualToSomething() throws Exception {
+        // Initialize the database
+        categoryRepository.saveAndFlush(category);
+
+        // Get all the categoryList where categoryDescription equals to DEFAULT_CATEGORY_DESCRIPTION
+        defaultCategoryShouldBeFound("categoryDescription.equals=" + DEFAULT_CATEGORY_DESCRIPTION);
+
+        // Get all the categoryList where categoryDescription equals to UPDATED_CATEGORY_DESCRIPTION
+        defaultCategoryShouldNotBeFound("categoryDescription.equals=" + UPDATED_CATEGORY_DESCRIPTION);
+    }
+
+    @Test
+    @Transactional
+    public void getAllCategoriesByCategoryDescriptionIsInShouldWork() throws Exception {
+        // Initialize the database
+        categoryRepository.saveAndFlush(category);
+
+        // Get all the categoryList where categoryDescription in DEFAULT_CATEGORY_DESCRIPTION or UPDATED_CATEGORY_DESCRIPTION
+        defaultCategoryShouldBeFound("categoryDescription.in=" + DEFAULT_CATEGORY_DESCRIPTION + "," + UPDATED_CATEGORY_DESCRIPTION);
+
+        // Get all the categoryList where categoryDescription equals to UPDATED_CATEGORY_DESCRIPTION
+        defaultCategoryShouldNotBeFound("categoryDescription.in=" + UPDATED_CATEGORY_DESCRIPTION);
+    }
+
+    @Test
+    @Transactional
+    public void getAllCategoriesByCategoryDescriptionIsNullOrNotNull() throws Exception {
+        // Initialize the database
+        categoryRepository.saveAndFlush(category);
+
+        // Get all the categoryList where categoryDescription is not null
+        defaultCategoryShouldBeFound("categoryDescription.specified=true");
+
+        // Get all the categoryList where categoryDescription is null
+        defaultCategoryShouldNotBeFound("categoryDescription.specified=false");
+    }
+    /**
+     * Executes the search, and checks that the default entity is returned
+     */
+    private void defaultCategoryShouldBeFound(String filter) throws Exception {
+        restCategoryMockMvc.perform(get("/api/categories?sort=id,desc&" + filter))
+            .andExpect(status().isOk())
+            .andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8_VALUE))
+            .andExpect(jsonPath("$.[*].id").value(hasItem(category.getId().intValue())))
+            .andExpect(jsonPath("$.[*].categoryName").value(hasItem(DEFAULT_CATEGORY_NAME)))
+            .andExpect(jsonPath("$.[*].categoryDescription").value(hasItem(DEFAULT_CATEGORY_DESCRIPTION)));
+
+        // Check, that the count call also returns 1
+        restCategoryMockMvc.perform(get("/api/categories/count?sort=id,desc&" + filter))
+            .andExpect(status().isOk())
+            .andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8_VALUE))
+            .andExpect(content().string("1"));
+    }
+
+    /**
+     * Executes the search, and checks that the default entity is not returned
+     */
+    private void defaultCategoryShouldNotBeFound(String filter) throws Exception {
+        restCategoryMockMvc.perform(get("/api/categories?sort=id,desc&" + filter))
+            .andExpect(status().isOk())
+            .andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8_VALUE))
+            .andExpect(jsonPath("$").isArray())
+            .andExpect(jsonPath("$").isEmpty());
+
+        // Check, that the count call also returns 0
+        restCategoryMockMvc.perform(get("/api/categories/count?sort=id,desc&" + filter))
+            .andExpect(status().isOk())
+            .andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8_VALUE))
+            .andExpect(content().string("0"));
+    }
+
 
     @Test
     @Transactional

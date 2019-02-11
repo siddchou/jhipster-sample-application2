@@ -3,12 +3,16 @@ package io.github.jhipster.application.web.rest;
 import io.github.jhipster.application.JhipsterSampleApplication2App;
 
 import io.github.jhipster.application.domain.ContractorService;
+import io.github.jhipster.application.domain.Contractor;
+import io.github.jhipster.application.domain.Services;
 import io.github.jhipster.application.repository.ContractorServiceRepository;
 import io.github.jhipster.application.repository.search.ContractorServiceSearchRepository;
 import io.github.jhipster.application.service.ContractorServiceService;
 import io.github.jhipster.application.service.dto.ContractorServiceDTO;
 import io.github.jhipster.application.service.mapper.ContractorServiceMapper;
 import io.github.jhipster.application.web.rest.errors.ExceptionTranslator;
+import io.github.jhipster.application.service.dto.ContractorServiceCriteria;
+import io.github.jhipster.application.service.ContractorServiceQueryService;
 
 import org.junit.Before;
 import org.junit.Test;
@@ -78,6 +82,9 @@ public class ContractorServiceResourceIntTest {
     private ContractorServiceSearchRepository mockContractorServiceSearchRepository;
 
     @Autowired
+    private ContractorServiceQueryService contractorServiceQueryService;
+
+    @Autowired
     private MappingJackson2HttpMessageConverter jacksonMessageConverter;
 
     @Autowired
@@ -99,7 +106,7 @@ public class ContractorServiceResourceIntTest {
     @Before
     public void setup() {
         MockitoAnnotations.initMocks(this);
-        final ContractorServiceResource contractorServiceResource = new ContractorServiceResource(contractorServiceService);
+        final ContractorServiceResource contractorServiceResource = new ContractorServiceResource(contractorServiceService, contractorServiceQueryService);
         this.restContractorServiceMockMvc = MockMvcBuilders.standaloneSetup(contractorServiceResource)
             .setCustomArgumentResolvers(pageableArgumentResolver)
             .setControllerAdvice(exceptionTranslator)
@@ -205,6 +212,197 @@ public class ContractorServiceResourceIntTest {
             .andExpect(jsonPath("$.startDate").value(DEFAULT_START_DATE.toString()))
             .andExpect(jsonPath("$.endDate").value(DEFAULT_END_DATE.toString()));
     }
+
+    @Test
+    @Transactional
+    public void getAllContractorServicesByIsVerifiedIsEqualToSomething() throws Exception {
+        // Initialize the database
+        contractorServiceRepository.saveAndFlush(contractorService);
+
+        // Get all the contractorServiceList where isVerified equals to DEFAULT_IS_VERIFIED
+        defaultContractorServiceShouldBeFound("isVerified.equals=" + DEFAULT_IS_VERIFIED);
+
+        // Get all the contractorServiceList where isVerified equals to UPDATED_IS_VERIFIED
+        defaultContractorServiceShouldNotBeFound("isVerified.equals=" + UPDATED_IS_VERIFIED);
+    }
+
+    @Test
+    @Transactional
+    public void getAllContractorServicesByIsVerifiedIsInShouldWork() throws Exception {
+        // Initialize the database
+        contractorServiceRepository.saveAndFlush(contractorService);
+
+        // Get all the contractorServiceList where isVerified in DEFAULT_IS_VERIFIED or UPDATED_IS_VERIFIED
+        defaultContractorServiceShouldBeFound("isVerified.in=" + DEFAULT_IS_VERIFIED + "," + UPDATED_IS_VERIFIED);
+
+        // Get all the contractorServiceList where isVerified equals to UPDATED_IS_VERIFIED
+        defaultContractorServiceShouldNotBeFound("isVerified.in=" + UPDATED_IS_VERIFIED);
+    }
+
+    @Test
+    @Transactional
+    public void getAllContractorServicesByIsVerifiedIsNullOrNotNull() throws Exception {
+        // Initialize the database
+        contractorServiceRepository.saveAndFlush(contractorService);
+
+        // Get all the contractorServiceList where isVerified is not null
+        defaultContractorServiceShouldBeFound("isVerified.specified=true");
+
+        // Get all the contractorServiceList where isVerified is null
+        defaultContractorServiceShouldNotBeFound("isVerified.specified=false");
+    }
+
+    @Test
+    @Transactional
+    public void getAllContractorServicesByStartDateIsEqualToSomething() throws Exception {
+        // Initialize the database
+        contractorServiceRepository.saveAndFlush(contractorService);
+
+        // Get all the contractorServiceList where startDate equals to DEFAULT_START_DATE
+        defaultContractorServiceShouldBeFound("startDate.equals=" + DEFAULT_START_DATE);
+
+        // Get all the contractorServiceList where startDate equals to UPDATED_START_DATE
+        defaultContractorServiceShouldNotBeFound("startDate.equals=" + UPDATED_START_DATE);
+    }
+
+    @Test
+    @Transactional
+    public void getAllContractorServicesByStartDateIsInShouldWork() throws Exception {
+        // Initialize the database
+        contractorServiceRepository.saveAndFlush(contractorService);
+
+        // Get all the contractorServiceList where startDate in DEFAULT_START_DATE or UPDATED_START_DATE
+        defaultContractorServiceShouldBeFound("startDate.in=" + DEFAULT_START_DATE + "," + UPDATED_START_DATE);
+
+        // Get all the contractorServiceList where startDate equals to UPDATED_START_DATE
+        defaultContractorServiceShouldNotBeFound("startDate.in=" + UPDATED_START_DATE);
+    }
+
+    @Test
+    @Transactional
+    public void getAllContractorServicesByStartDateIsNullOrNotNull() throws Exception {
+        // Initialize the database
+        contractorServiceRepository.saveAndFlush(contractorService);
+
+        // Get all the contractorServiceList where startDate is not null
+        defaultContractorServiceShouldBeFound("startDate.specified=true");
+
+        // Get all the contractorServiceList where startDate is null
+        defaultContractorServiceShouldNotBeFound("startDate.specified=false");
+    }
+
+    @Test
+    @Transactional
+    public void getAllContractorServicesByEndDateIsEqualToSomething() throws Exception {
+        // Initialize the database
+        contractorServiceRepository.saveAndFlush(contractorService);
+
+        // Get all the contractorServiceList where endDate equals to DEFAULT_END_DATE
+        defaultContractorServiceShouldBeFound("endDate.equals=" + DEFAULT_END_DATE);
+
+        // Get all the contractorServiceList where endDate equals to UPDATED_END_DATE
+        defaultContractorServiceShouldNotBeFound("endDate.equals=" + UPDATED_END_DATE);
+    }
+
+    @Test
+    @Transactional
+    public void getAllContractorServicesByEndDateIsInShouldWork() throws Exception {
+        // Initialize the database
+        contractorServiceRepository.saveAndFlush(contractorService);
+
+        // Get all the contractorServiceList where endDate in DEFAULT_END_DATE or UPDATED_END_DATE
+        defaultContractorServiceShouldBeFound("endDate.in=" + DEFAULT_END_DATE + "," + UPDATED_END_DATE);
+
+        // Get all the contractorServiceList where endDate equals to UPDATED_END_DATE
+        defaultContractorServiceShouldNotBeFound("endDate.in=" + UPDATED_END_DATE);
+    }
+
+    @Test
+    @Transactional
+    public void getAllContractorServicesByEndDateIsNullOrNotNull() throws Exception {
+        // Initialize the database
+        contractorServiceRepository.saveAndFlush(contractorService);
+
+        // Get all the contractorServiceList where endDate is not null
+        defaultContractorServiceShouldBeFound("endDate.specified=true");
+
+        // Get all the contractorServiceList where endDate is null
+        defaultContractorServiceShouldNotBeFound("endDate.specified=false");
+    }
+
+    @Test
+    @Transactional
+    public void getAllContractorServicesByContractorIsEqualToSomething() throws Exception {
+        // Initialize the database
+        Contractor contractor = ContractorResourceIntTest.createEntity(em);
+        em.persist(contractor);
+        em.flush();
+        contractorService.setContractor(contractor);
+        contractorServiceRepository.saveAndFlush(contractorService);
+        Long contractorId = contractor.getId();
+
+        // Get all the contractorServiceList where contractor equals to contractorId
+        defaultContractorServiceShouldBeFound("contractorId.equals=" + contractorId);
+
+        // Get all the contractorServiceList where contractor equals to contractorId + 1
+        defaultContractorServiceShouldNotBeFound("contractorId.equals=" + (contractorId + 1));
+    }
+
+
+    @Test
+    @Transactional
+    public void getAllContractorServicesByServicesIsEqualToSomething() throws Exception {
+        // Initialize the database
+        Services services = ServicesResourceIntTest.createEntity(em);
+        em.persist(services);
+        em.flush();
+        contractorService.setServices(services);
+        contractorServiceRepository.saveAndFlush(contractorService);
+        Long servicesId = services.getId();
+
+        // Get all the contractorServiceList where services equals to servicesId
+        defaultContractorServiceShouldBeFound("servicesId.equals=" + servicesId);
+
+        // Get all the contractorServiceList where services equals to servicesId + 1
+        defaultContractorServiceShouldNotBeFound("servicesId.equals=" + (servicesId + 1));
+    }
+
+    /**
+     * Executes the search, and checks that the default entity is returned
+     */
+    private void defaultContractorServiceShouldBeFound(String filter) throws Exception {
+        restContractorServiceMockMvc.perform(get("/api/contractor-services?sort=id,desc&" + filter))
+            .andExpect(status().isOk())
+            .andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8_VALUE))
+            .andExpect(jsonPath("$.[*].id").value(hasItem(contractorService.getId().intValue())))
+            .andExpect(jsonPath("$.[*].isVerified").value(hasItem(DEFAULT_IS_VERIFIED.booleanValue())))
+            .andExpect(jsonPath("$.[*].startDate").value(hasItem(DEFAULT_START_DATE.toString())))
+            .andExpect(jsonPath("$.[*].endDate").value(hasItem(DEFAULT_END_DATE.toString())));
+
+        // Check, that the count call also returns 1
+        restContractorServiceMockMvc.perform(get("/api/contractor-services/count?sort=id,desc&" + filter))
+            .andExpect(status().isOk())
+            .andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8_VALUE))
+            .andExpect(content().string("1"));
+    }
+
+    /**
+     * Executes the search, and checks that the default entity is not returned
+     */
+    private void defaultContractorServiceShouldNotBeFound(String filter) throws Exception {
+        restContractorServiceMockMvc.perform(get("/api/contractor-services?sort=id,desc&" + filter))
+            .andExpect(status().isOk())
+            .andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8_VALUE))
+            .andExpect(jsonPath("$").isArray())
+            .andExpect(jsonPath("$").isEmpty());
+
+        // Check, that the count call also returns 0
+        restContractorServiceMockMvc.perform(get("/api/contractor-services/count?sort=id,desc&" + filter))
+            .andExpect(status().isOk())
+            .andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8_VALUE))
+            .andExpect(content().string("0"));
+    }
+
 
     @Test
     @Transactional

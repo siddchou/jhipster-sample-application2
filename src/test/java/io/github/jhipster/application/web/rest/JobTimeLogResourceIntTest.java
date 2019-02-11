@@ -3,12 +3,15 @@ package io.github.jhipster.application.web.rest;
 import io.github.jhipster.application.JhipsterSampleApplication2App;
 
 import io.github.jhipster.application.domain.JobTimeLog;
+import io.github.jhipster.application.domain.JobHistory;
 import io.github.jhipster.application.repository.JobTimeLogRepository;
 import io.github.jhipster.application.repository.search.JobTimeLogSearchRepository;
 import io.github.jhipster.application.service.JobTimeLogService;
 import io.github.jhipster.application.service.dto.JobTimeLogDTO;
 import io.github.jhipster.application.service.mapper.JobTimeLogMapper;
 import io.github.jhipster.application.web.rest.errors.ExceptionTranslator;
+import io.github.jhipster.application.service.dto.JobTimeLogCriteria;
+import io.github.jhipster.application.service.JobTimeLogQueryService;
 
 import org.junit.Before;
 import org.junit.Test;
@@ -78,6 +81,9 @@ public class JobTimeLogResourceIntTest {
     private JobTimeLogSearchRepository mockJobTimeLogSearchRepository;
 
     @Autowired
+    private JobTimeLogQueryService jobTimeLogQueryService;
+
+    @Autowired
     private MappingJackson2HttpMessageConverter jacksonMessageConverter;
 
     @Autowired
@@ -99,7 +105,7 @@ public class JobTimeLogResourceIntTest {
     @Before
     public void setup() {
         MockitoAnnotations.initMocks(this);
-        final JobTimeLogResource jobTimeLogResource = new JobTimeLogResource(jobTimeLogService);
+        final JobTimeLogResource jobTimeLogResource = new JobTimeLogResource(jobTimeLogService, jobTimeLogQueryService);
         this.restJobTimeLogMockMvc = MockMvcBuilders.standaloneSetup(jobTimeLogResource)
             .setCustomArgumentResolvers(pageableArgumentResolver)
             .setControllerAdvice(exceptionTranslator)
@@ -205,6 +211,178 @@ public class JobTimeLogResourceIntTest {
             .andExpect(jsonPath("$.endDate").value(DEFAULT_END_DATE.toString()))
             .andExpect(jsonPath("$.isValidated").value(DEFAULT_IS_VALIDATED.booleanValue()));
     }
+
+    @Test
+    @Transactional
+    public void getAllJobTimeLogsByStartDateIsEqualToSomething() throws Exception {
+        // Initialize the database
+        jobTimeLogRepository.saveAndFlush(jobTimeLog);
+
+        // Get all the jobTimeLogList where startDate equals to DEFAULT_START_DATE
+        defaultJobTimeLogShouldBeFound("startDate.equals=" + DEFAULT_START_DATE);
+
+        // Get all the jobTimeLogList where startDate equals to UPDATED_START_DATE
+        defaultJobTimeLogShouldNotBeFound("startDate.equals=" + UPDATED_START_DATE);
+    }
+
+    @Test
+    @Transactional
+    public void getAllJobTimeLogsByStartDateIsInShouldWork() throws Exception {
+        // Initialize the database
+        jobTimeLogRepository.saveAndFlush(jobTimeLog);
+
+        // Get all the jobTimeLogList where startDate in DEFAULT_START_DATE or UPDATED_START_DATE
+        defaultJobTimeLogShouldBeFound("startDate.in=" + DEFAULT_START_DATE + "," + UPDATED_START_DATE);
+
+        // Get all the jobTimeLogList where startDate equals to UPDATED_START_DATE
+        defaultJobTimeLogShouldNotBeFound("startDate.in=" + UPDATED_START_DATE);
+    }
+
+    @Test
+    @Transactional
+    public void getAllJobTimeLogsByStartDateIsNullOrNotNull() throws Exception {
+        // Initialize the database
+        jobTimeLogRepository.saveAndFlush(jobTimeLog);
+
+        // Get all the jobTimeLogList where startDate is not null
+        defaultJobTimeLogShouldBeFound("startDate.specified=true");
+
+        // Get all the jobTimeLogList where startDate is null
+        defaultJobTimeLogShouldNotBeFound("startDate.specified=false");
+    }
+
+    @Test
+    @Transactional
+    public void getAllJobTimeLogsByEndDateIsEqualToSomething() throws Exception {
+        // Initialize the database
+        jobTimeLogRepository.saveAndFlush(jobTimeLog);
+
+        // Get all the jobTimeLogList where endDate equals to DEFAULT_END_DATE
+        defaultJobTimeLogShouldBeFound("endDate.equals=" + DEFAULT_END_DATE);
+
+        // Get all the jobTimeLogList where endDate equals to UPDATED_END_DATE
+        defaultJobTimeLogShouldNotBeFound("endDate.equals=" + UPDATED_END_DATE);
+    }
+
+    @Test
+    @Transactional
+    public void getAllJobTimeLogsByEndDateIsInShouldWork() throws Exception {
+        // Initialize the database
+        jobTimeLogRepository.saveAndFlush(jobTimeLog);
+
+        // Get all the jobTimeLogList where endDate in DEFAULT_END_DATE or UPDATED_END_DATE
+        defaultJobTimeLogShouldBeFound("endDate.in=" + DEFAULT_END_DATE + "," + UPDATED_END_DATE);
+
+        // Get all the jobTimeLogList where endDate equals to UPDATED_END_DATE
+        defaultJobTimeLogShouldNotBeFound("endDate.in=" + UPDATED_END_DATE);
+    }
+
+    @Test
+    @Transactional
+    public void getAllJobTimeLogsByEndDateIsNullOrNotNull() throws Exception {
+        // Initialize the database
+        jobTimeLogRepository.saveAndFlush(jobTimeLog);
+
+        // Get all the jobTimeLogList where endDate is not null
+        defaultJobTimeLogShouldBeFound("endDate.specified=true");
+
+        // Get all the jobTimeLogList where endDate is null
+        defaultJobTimeLogShouldNotBeFound("endDate.specified=false");
+    }
+
+    @Test
+    @Transactional
+    public void getAllJobTimeLogsByIsValidatedIsEqualToSomething() throws Exception {
+        // Initialize the database
+        jobTimeLogRepository.saveAndFlush(jobTimeLog);
+
+        // Get all the jobTimeLogList where isValidated equals to DEFAULT_IS_VALIDATED
+        defaultJobTimeLogShouldBeFound("isValidated.equals=" + DEFAULT_IS_VALIDATED);
+
+        // Get all the jobTimeLogList where isValidated equals to UPDATED_IS_VALIDATED
+        defaultJobTimeLogShouldNotBeFound("isValidated.equals=" + UPDATED_IS_VALIDATED);
+    }
+
+    @Test
+    @Transactional
+    public void getAllJobTimeLogsByIsValidatedIsInShouldWork() throws Exception {
+        // Initialize the database
+        jobTimeLogRepository.saveAndFlush(jobTimeLog);
+
+        // Get all the jobTimeLogList where isValidated in DEFAULT_IS_VALIDATED or UPDATED_IS_VALIDATED
+        defaultJobTimeLogShouldBeFound("isValidated.in=" + DEFAULT_IS_VALIDATED + "," + UPDATED_IS_VALIDATED);
+
+        // Get all the jobTimeLogList where isValidated equals to UPDATED_IS_VALIDATED
+        defaultJobTimeLogShouldNotBeFound("isValidated.in=" + UPDATED_IS_VALIDATED);
+    }
+
+    @Test
+    @Transactional
+    public void getAllJobTimeLogsByIsValidatedIsNullOrNotNull() throws Exception {
+        // Initialize the database
+        jobTimeLogRepository.saveAndFlush(jobTimeLog);
+
+        // Get all the jobTimeLogList where isValidated is not null
+        defaultJobTimeLogShouldBeFound("isValidated.specified=true");
+
+        // Get all the jobTimeLogList where isValidated is null
+        defaultJobTimeLogShouldNotBeFound("isValidated.specified=false");
+    }
+
+    @Test
+    @Transactional
+    public void getAllJobTimeLogsByJobHistoryIsEqualToSomething() throws Exception {
+        // Initialize the database
+        JobHistory jobHistory = JobHistoryResourceIntTest.createEntity(em);
+        em.persist(jobHistory);
+        em.flush();
+        jobTimeLog.setJobHistory(jobHistory);
+        jobTimeLogRepository.saveAndFlush(jobTimeLog);
+        Long jobHistoryId = jobHistory.getId();
+
+        // Get all the jobTimeLogList where jobHistory equals to jobHistoryId
+        defaultJobTimeLogShouldBeFound("jobHistoryId.equals=" + jobHistoryId);
+
+        // Get all the jobTimeLogList where jobHistory equals to jobHistoryId + 1
+        defaultJobTimeLogShouldNotBeFound("jobHistoryId.equals=" + (jobHistoryId + 1));
+    }
+
+    /**
+     * Executes the search, and checks that the default entity is returned
+     */
+    private void defaultJobTimeLogShouldBeFound(String filter) throws Exception {
+        restJobTimeLogMockMvc.perform(get("/api/job-time-logs?sort=id,desc&" + filter))
+            .andExpect(status().isOk())
+            .andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8_VALUE))
+            .andExpect(jsonPath("$.[*].id").value(hasItem(jobTimeLog.getId().intValue())))
+            .andExpect(jsonPath("$.[*].startDate").value(hasItem(DEFAULT_START_DATE.toString())))
+            .andExpect(jsonPath("$.[*].endDate").value(hasItem(DEFAULT_END_DATE.toString())))
+            .andExpect(jsonPath("$.[*].isValidated").value(hasItem(DEFAULT_IS_VALIDATED.booleanValue())));
+
+        // Check, that the count call also returns 1
+        restJobTimeLogMockMvc.perform(get("/api/job-time-logs/count?sort=id,desc&" + filter))
+            .andExpect(status().isOk())
+            .andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8_VALUE))
+            .andExpect(content().string("1"));
+    }
+
+    /**
+     * Executes the search, and checks that the default entity is not returned
+     */
+    private void defaultJobTimeLogShouldNotBeFound(String filter) throws Exception {
+        restJobTimeLogMockMvc.perform(get("/api/job-time-logs?sort=id,desc&" + filter))
+            .andExpect(status().isOk())
+            .andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8_VALUE))
+            .andExpect(jsonPath("$").isArray())
+            .andExpect(jsonPath("$").isEmpty());
+
+        // Check, that the count call also returns 0
+        restJobTimeLogMockMvc.perform(get("/api/job-time-logs/count?sort=id,desc&" + filter))
+            .andExpect(status().isOk())
+            .andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8_VALUE))
+            .andExpect(content().string("0"));
+    }
+
 
     @Test
     @Transactional

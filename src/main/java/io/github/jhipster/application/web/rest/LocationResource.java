@@ -4,6 +4,8 @@ import io.github.jhipster.application.web.rest.errors.BadRequestAlertException;
 import io.github.jhipster.application.web.rest.util.HeaderUtil;
 import io.github.jhipster.application.web.rest.util.PaginationUtil;
 import io.github.jhipster.application.service.dto.LocationDTO;
+import io.github.jhipster.application.service.dto.LocationCriteria;
+import io.github.jhipster.application.service.LocationQueryService;
 import io.github.jhipster.web.util.ResponseUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -36,8 +38,11 @@ public class LocationResource {
 
     private final LocationService locationService;
 
-    public LocationResource(LocationService locationService) {
+    private final LocationQueryService locationQueryService;
+
+    public LocationResource(LocationService locationService, LocationQueryService locationQueryService) {
         this.locationService = locationService;
+        this.locationQueryService = locationQueryService;
     }
 
     /**
@@ -84,14 +89,27 @@ public class LocationResource {
      * GET  /locations : get all the locations.
      *
      * @param pageable the pagination information
+     * @param criteria the criterias which the requested entities should match
      * @return the ResponseEntity with status 200 (OK) and the list of locations in body
      */
     @GetMapping("/locations")
-    public ResponseEntity<List<LocationDTO>> getAllLocations(Pageable pageable) {
-        log.debug("REST request to get a page of Locations");
-        Page<LocationDTO> page = locationService.findAll(pageable);
+    public ResponseEntity<List<LocationDTO>> getAllLocations(LocationCriteria criteria, Pageable pageable) {
+        log.debug("REST request to get Locations by criteria: {}", criteria);
+        Page<LocationDTO> page = locationQueryService.findByCriteria(criteria, pageable);
         HttpHeaders headers = PaginationUtil.generatePaginationHttpHeaders(page, "/api/locations");
         return ResponseEntity.ok().headers(headers).body(page.getContent());
+    }
+
+    /**
+    * GET  /locations/count : count all the locations.
+    *
+    * @param criteria the criterias which the requested entities should match
+    * @return the ResponseEntity with status 200 (OK) and the count in body
+    */
+    @GetMapping("/locations/count")
+    public ResponseEntity<Long> countLocations(LocationCriteria criteria) {
+        log.debug("REST request to count Locations by criteria: {}", criteria);
+        return ResponseEntity.ok().body(locationQueryService.countByCriteria(criteria));
     }
 
     /**

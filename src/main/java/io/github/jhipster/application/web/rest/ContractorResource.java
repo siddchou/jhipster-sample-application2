@@ -4,6 +4,8 @@ import io.github.jhipster.application.web.rest.errors.BadRequestAlertException;
 import io.github.jhipster.application.web.rest.util.HeaderUtil;
 import io.github.jhipster.application.web.rest.util.PaginationUtil;
 import io.github.jhipster.application.service.dto.ContractorDTO;
+import io.github.jhipster.application.service.dto.ContractorCriteria;
+import io.github.jhipster.application.service.ContractorQueryService;
 import io.github.jhipster.web.util.ResponseUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -36,8 +38,11 @@ public class ContractorResource {
 
     private final ContractorService contractorService;
 
-    public ContractorResource(ContractorService contractorService) {
+    private final ContractorQueryService contractorQueryService;
+
+    public ContractorResource(ContractorService contractorService, ContractorQueryService contractorQueryService) {
         this.contractorService = contractorService;
+        this.contractorQueryService = contractorQueryService;
     }
 
     /**
@@ -84,14 +89,27 @@ public class ContractorResource {
      * GET  /contractors : get all the contractors.
      *
      * @param pageable the pagination information
+     * @param criteria the criterias which the requested entities should match
      * @return the ResponseEntity with status 200 (OK) and the list of contractors in body
      */
     @GetMapping("/contractors")
-    public ResponseEntity<List<ContractorDTO>> getAllContractors(Pageable pageable) {
-        log.debug("REST request to get a page of Contractors");
-        Page<ContractorDTO> page = contractorService.findAll(pageable);
+    public ResponseEntity<List<ContractorDTO>> getAllContractors(ContractorCriteria criteria, Pageable pageable) {
+        log.debug("REST request to get Contractors by criteria: {}", criteria);
+        Page<ContractorDTO> page = contractorQueryService.findByCriteria(criteria, pageable);
         HttpHeaders headers = PaginationUtil.generatePaginationHttpHeaders(page, "/api/contractors");
         return ResponseEntity.ok().headers(headers).body(page.getContent());
+    }
+
+    /**
+    * GET  /contractors/count : count all the contractors.
+    *
+    * @param criteria the criterias which the requested entities should match
+    * @return the ResponseEntity with status 200 (OK) and the count in body
+    */
+    @GetMapping("/contractors/count")
+    public ResponseEntity<Long> countContractors(ContractorCriteria criteria) {
+        log.debug("REST request to count Contractors by criteria: {}", criteria);
+        return ResponseEntity.ok().body(contractorQueryService.countByCriteria(criteria));
     }
 
     /**

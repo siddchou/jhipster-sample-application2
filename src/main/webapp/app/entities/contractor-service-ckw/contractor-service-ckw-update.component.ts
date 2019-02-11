@@ -43,7 +43,7 @@ export class ContractorServiceCkwUpdateComponent implements OnInit {
             this.endDate = this.contractorService.endDate != null ? this.contractorService.endDate.format(DATE_TIME_FORMAT) : null;
         });
         this.contractorService
-            .query({ filter: 'contractorservice-is-null' })
+            .query({ 'contractorServiceId.specified': 'false' })
             .pipe(
                 filter((mayBeOk: HttpResponse<IContractorCkw[]>) => mayBeOk.ok),
                 map((response: HttpResponse<IContractorCkw[]>) => response.body)
@@ -68,7 +68,7 @@ export class ContractorServiceCkwUpdateComponent implements OnInit {
                 (res: HttpErrorResponse) => this.onError(res.message)
             );
         this.servicesService
-            .query({ filter: 'contractorservice-is-null' })
+            .query({ 'contractorServiceId.specified': 'false' })
             .pipe(
                 filter((mayBeOk: HttpResponse<IServicesCkw[]>) => mayBeOk.ok),
                 map((response: HttpResponse<IServicesCkw[]>) => response.body)

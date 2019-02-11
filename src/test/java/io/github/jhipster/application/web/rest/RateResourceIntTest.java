@@ -9,6 +9,8 @@ import io.github.jhipster.application.service.RateService;
 import io.github.jhipster.application.service.dto.RateDTO;
 import io.github.jhipster.application.service.mapper.RateMapper;
 import io.github.jhipster.application.web.rest.errors.ExceptionTranslator;
+import io.github.jhipster.application.service.dto.RateCriteria;
+import io.github.jhipster.application.service.RateQueryService;
 
 import org.junit.Before;
 import org.junit.Test;
@@ -79,6 +81,9 @@ public class RateResourceIntTest {
     private RateSearchRepository mockRateSearchRepository;
 
     @Autowired
+    private RateQueryService rateQueryService;
+
+    @Autowired
     private MappingJackson2HttpMessageConverter jacksonMessageConverter;
 
     @Autowired
@@ -100,7 +105,7 @@ public class RateResourceIntTest {
     @Before
     public void setup() {
         MockitoAnnotations.initMocks(this);
-        final RateResource rateResource = new RateResource(rateService);
+        final RateResource rateResource = new RateResource(rateService, rateQueryService);
         this.restRateMockMvc = MockMvcBuilders.standaloneSetup(rateResource)
             .setCustomArgumentResolvers(pageableArgumentResolver)
             .setControllerAdvice(exceptionTranslator)
@@ -210,6 +215,253 @@ public class RateResourceIntTest {
             .andExpect(jsonPath("$.fullRate").value(DEFAULT_FULL_RATE))
             .andExpect(jsonPath("$.idleRate").value(DEFAULT_IDLE_RATE));
     }
+
+    @Test
+    @Transactional
+    public void getAllRatesByRateNameIsEqualToSomething() throws Exception {
+        // Initialize the database
+        rateRepository.saveAndFlush(rate);
+
+        // Get all the rateList where rateName equals to DEFAULT_RATE_NAME
+        defaultRateShouldBeFound("rateName.equals=" + DEFAULT_RATE_NAME);
+
+        // Get all the rateList where rateName equals to UPDATED_RATE_NAME
+        defaultRateShouldNotBeFound("rateName.equals=" + UPDATED_RATE_NAME);
+    }
+
+    @Test
+    @Transactional
+    public void getAllRatesByRateNameIsInShouldWork() throws Exception {
+        // Initialize the database
+        rateRepository.saveAndFlush(rate);
+
+        // Get all the rateList where rateName in DEFAULT_RATE_NAME or UPDATED_RATE_NAME
+        defaultRateShouldBeFound("rateName.in=" + DEFAULT_RATE_NAME + "," + UPDATED_RATE_NAME);
+
+        // Get all the rateList where rateName equals to UPDATED_RATE_NAME
+        defaultRateShouldNotBeFound("rateName.in=" + UPDATED_RATE_NAME);
+    }
+
+    @Test
+    @Transactional
+    public void getAllRatesByRateNameIsNullOrNotNull() throws Exception {
+        // Initialize the database
+        rateRepository.saveAndFlush(rate);
+
+        // Get all the rateList where rateName is not null
+        defaultRateShouldBeFound("rateName.specified=true");
+
+        // Get all the rateList where rateName is null
+        defaultRateShouldNotBeFound("rateName.specified=false");
+    }
+
+    @Test
+    @Transactional
+    public void getAllRatesByRateDescIsEqualToSomething() throws Exception {
+        // Initialize the database
+        rateRepository.saveAndFlush(rate);
+
+        // Get all the rateList where rateDesc equals to DEFAULT_RATE_DESC
+        defaultRateShouldBeFound("rateDesc.equals=" + DEFAULT_RATE_DESC);
+
+        // Get all the rateList where rateDesc equals to UPDATED_RATE_DESC
+        defaultRateShouldNotBeFound("rateDesc.equals=" + UPDATED_RATE_DESC);
+    }
+
+    @Test
+    @Transactional
+    public void getAllRatesByRateDescIsInShouldWork() throws Exception {
+        // Initialize the database
+        rateRepository.saveAndFlush(rate);
+
+        // Get all the rateList where rateDesc in DEFAULT_RATE_DESC or UPDATED_RATE_DESC
+        defaultRateShouldBeFound("rateDesc.in=" + DEFAULT_RATE_DESC + "," + UPDATED_RATE_DESC);
+
+        // Get all the rateList where rateDesc equals to UPDATED_RATE_DESC
+        defaultRateShouldNotBeFound("rateDesc.in=" + UPDATED_RATE_DESC);
+    }
+
+    @Test
+    @Transactional
+    public void getAllRatesByRateDescIsNullOrNotNull() throws Exception {
+        // Initialize the database
+        rateRepository.saveAndFlush(rate);
+
+        // Get all the rateList where rateDesc is not null
+        defaultRateShouldBeFound("rateDesc.specified=true");
+
+        // Get all the rateList where rateDesc is null
+        defaultRateShouldNotBeFound("rateDesc.specified=false");
+    }
+
+    @Test
+    @Transactional
+    public void getAllRatesByFullRateIsEqualToSomething() throws Exception {
+        // Initialize the database
+        rateRepository.saveAndFlush(rate);
+
+        // Get all the rateList where fullRate equals to DEFAULT_FULL_RATE
+        defaultRateShouldBeFound("fullRate.equals=" + DEFAULT_FULL_RATE);
+
+        // Get all the rateList where fullRate equals to UPDATED_FULL_RATE
+        defaultRateShouldNotBeFound("fullRate.equals=" + UPDATED_FULL_RATE);
+    }
+
+    @Test
+    @Transactional
+    public void getAllRatesByFullRateIsInShouldWork() throws Exception {
+        // Initialize the database
+        rateRepository.saveAndFlush(rate);
+
+        // Get all the rateList where fullRate in DEFAULT_FULL_RATE or UPDATED_FULL_RATE
+        defaultRateShouldBeFound("fullRate.in=" + DEFAULT_FULL_RATE + "," + UPDATED_FULL_RATE);
+
+        // Get all the rateList where fullRate equals to UPDATED_FULL_RATE
+        defaultRateShouldNotBeFound("fullRate.in=" + UPDATED_FULL_RATE);
+    }
+
+    @Test
+    @Transactional
+    public void getAllRatesByFullRateIsNullOrNotNull() throws Exception {
+        // Initialize the database
+        rateRepository.saveAndFlush(rate);
+
+        // Get all the rateList where fullRate is not null
+        defaultRateShouldBeFound("fullRate.specified=true");
+
+        // Get all the rateList where fullRate is null
+        defaultRateShouldNotBeFound("fullRate.specified=false");
+    }
+
+    @Test
+    @Transactional
+    public void getAllRatesByFullRateIsGreaterThanOrEqualToSomething() throws Exception {
+        // Initialize the database
+        rateRepository.saveAndFlush(rate);
+
+        // Get all the rateList where fullRate greater than or equals to DEFAULT_FULL_RATE
+        defaultRateShouldBeFound("fullRate.greaterOrEqualThan=" + DEFAULT_FULL_RATE);
+
+        // Get all the rateList where fullRate greater than or equals to UPDATED_FULL_RATE
+        defaultRateShouldNotBeFound("fullRate.greaterOrEqualThan=" + UPDATED_FULL_RATE);
+    }
+
+    @Test
+    @Transactional
+    public void getAllRatesByFullRateIsLessThanSomething() throws Exception {
+        // Initialize the database
+        rateRepository.saveAndFlush(rate);
+
+        // Get all the rateList where fullRate less than or equals to DEFAULT_FULL_RATE
+        defaultRateShouldNotBeFound("fullRate.lessThan=" + DEFAULT_FULL_RATE);
+
+        // Get all the rateList where fullRate less than or equals to UPDATED_FULL_RATE
+        defaultRateShouldBeFound("fullRate.lessThan=" + UPDATED_FULL_RATE);
+    }
+
+
+    @Test
+    @Transactional
+    public void getAllRatesByIdleRateIsEqualToSomething() throws Exception {
+        // Initialize the database
+        rateRepository.saveAndFlush(rate);
+
+        // Get all the rateList where idleRate equals to DEFAULT_IDLE_RATE
+        defaultRateShouldBeFound("idleRate.equals=" + DEFAULT_IDLE_RATE);
+
+        // Get all the rateList where idleRate equals to UPDATED_IDLE_RATE
+        defaultRateShouldNotBeFound("idleRate.equals=" + UPDATED_IDLE_RATE);
+    }
+
+    @Test
+    @Transactional
+    public void getAllRatesByIdleRateIsInShouldWork() throws Exception {
+        // Initialize the database
+        rateRepository.saveAndFlush(rate);
+
+        // Get all the rateList where idleRate in DEFAULT_IDLE_RATE or UPDATED_IDLE_RATE
+        defaultRateShouldBeFound("idleRate.in=" + DEFAULT_IDLE_RATE + "," + UPDATED_IDLE_RATE);
+
+        // Get all the rateList where idleRate equals to UPDATED_IDLE_RATE
+        defaultRateShouldNotBeFound("idleRate.in=" + UPDATED_IDLE_RATE);
+    }
+
+    @Test
+    @Transactional
+    public void getAllRatesByIdleRateIsNullOrNotNull() throws Exception {
+        // Initialize the database
+        rateRepository.saveAndFlush(rate);
+
+        // Get all the rateList where idleRate is not null
+        defaultRateShouldBeFound("idleRate.specified=true");
+
+        // Get all the rateList where idleRate is null
+        defaultRateShouldNotBeFound("idleRate.specified=false");
+    }
+
+    @Test
+    @Transactional
+    public void getAllRatesByIdleRateIsGreaterThanOrEqualToSomething() throws Exception {
+        // Initialize the database
+        rateRepository.saveAndFlush(rate);
+
+        // Get all the rateList where idleRate greater than or equals to DEFAULT_IDLE_RATE
+        defaultRateShouldBeFound("idleRate.greaterOrEqualThan=" + DEFAULT_IDLE_RATE);
+
+        // Get all the rateList where idleRate greater than or equals to UPDATED_IDLE_RATE
+        defaultRateShouldNotBeFound("idleRate.greaterOrEqualThan=" + UPDATED_IDLE_RATE);
+    }
+
+    @Test
+    @Transactional
+    public void getAllRatesByIdleRateIsLessThanSomething() throws Exception {
+        // Initialize the database
+        rateRepository.saveAndFlush(rate);
+
+        // Get all the rateList where idleRate less than or equals to DEFAULT_IDLE_RATE
+        defaultRateShouldNotBeFound("idleRate.lessThan=" + DEFAULT_IDLE_RATE);
+
+        // Get all the rateList where idleRate less than or equals to UPDATED_IDLE_RATE
+        defaultRateShouldBeFound("idleRate.lessThan=" + UPDATED_IDLE_RATE);
+    }
+
+    /**
+     * Executes the search, and checks that the default entity is returned
+     */
+    private void defaultRateShouldBeFound(String filter) throws Exception {
+        restRateMockMvc.perform(get("/api/rates?sort=id,desc&" + filter))
+            .andExpect(status().isOk())
+            .andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8_VALUE))
+            .andExpect(jsonPath("$.[*].id").value(hasItem(rate.getId().intValue())))
+            .andExpect(jsonPath("$.[*].rateName").value(hasItem(DEFAULT_RATE_NAME)))
+            .andExpect(jsonPath("$.[*].rateDesc").value(hasItem(DEFAULT_RATE_DESC)))
+            .andExpect(jsonPath("$.[*].fullRate").value(hasItem(DEFAULT_FULL_RATE)))
+            .andExpect(jsonPath("$.[*].idleRate").value(hasItem(DEFAULT_IDLE_RATE)));
+
+        // Check, that the count call also returns 1
+        restRateMockMvc.perform(get("/api/rates/count?sort=id,desc&" + filter))
+            .andExpect(status().isOk())
+            .andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8_VALUE))
+            .andExpect(content().string("1"));
+    }
+
+    /**
+     * Executes the search, and checks that the default entity is not returned
+     */
+    private void defaultRateShouldNotBeFound(String filter) throws Exception {
+        restRateMockMvc.perform(get("/api/rates?sort=id,desc&" + filter))
+            .andExpect(status().isOk())
+            .andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8_VALUE))
+            .andExpect(jsonPath("$").isArray())
+            .andExpect(jsonPath("$").isEmpty());
+
+        // Check, that the count call also returns 0
+        restRateMockMvc.perform(get("/api/rates/count?sort=id,desc&" + filter))
+            .andExpect(status().isOk())
+            .andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8_VALUE))
+            .andExpect(content().string("0"));
+    }
+
 
     @Test
     @Transactional

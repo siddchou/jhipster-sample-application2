@@ -9,6 +9,8 @@ import io.github.jhipster.application.service.PaymentService;
 import io.github.jhipster.application.service.dto.PaymentDTO;
 import io.github.jhipster.application.service.mapper.PaymentMapper;
 import io.github.jhipster.application.web.rest.errors.ExceptionTranslator;
+import io.github.jhipster.application.service.dto.PaymentCriteria;
+import io.github.jhipster.application.service.PaymentQueryService;
 
 import org.junit.Before;
 import org.junit.Test;
@@ -88,6 +90,9 @@ public class PaymentResourceIntTest {
     private PaymentSearchRepository mockPaymentSearchRepository;
 
     @Autowired
+    private PaymentQueryService paymentQueryService;
+
+    @Autowired
     private MappingJackson2HttpMessageConverter jacksonMessageConverter;
 
     @Autowired
@@ -109,7 +114,7 @@ public class PaymentResourceIntTest {
     @Before
     public void setup() {
         MockitoAnnotations.initMocks(this);
-        final PaymentResource paymentResource = new PaymentResource(paymentService);
+        final PaymentResource paymentResource = new PaymentResource(paymentService, paymentQueryService);
         this.restPaymentMockMvc = MockMvcBuilders.standaloneSetup(paymentResource)
             .setCustomArgumentResolvers(pageableArgumentResolver)
             .setControllerAdvice(exceptionTranslator)
@@ -227,6 +232,279 @@ public class PaymentResourceIntTest {
             .andExpect(jsonPath("$.startDate").value(DEFAULT_START_DATE.toString()))
             .andExpect(jsonPath("$.endDate").value(DEFAULT_END_DATE.toString()));
     }
+
+    @Test
+    @Transactional
+    public void getAllPaymentsByTotalPaymentAmountIsEqualToSomething() throws Exception {
+        // Initialize the database
+        paymentRepository.saveAndFlush(payment);
+
+        // Get all the paymentList where totalPaymentAmount equals to DEFAULT_TOTAL_PAYMENT_AMOUNT
+        defaultPaymentShouldBeFound("totalPaymentAmount.equals=" + DEFAULT_TOTAL_PAYMENT_AMOUNT);
+
+        // Get all the paymentList where totalPaymentAmount equals to UPDATED_TOTAL_PAYMENT_AMOUNT
+        defaultPaymentShouldNotBeFound("totalPaymentAmount.equals=" + UPDATED_TOTAL_PAYMENT_AMOUNT);
+    }
+
+    @Test
+    @Transactional
+    public void getAllPaymentsByTotalPaymentAmountIsInShouldWork() throws Exception {
+        // Initialize the database
+        paymentRepository.saveAndFlush(payment);
+
+        // Get all the paymentList where totalPaymentAmount in DEFAULT_TOTAL_PAYMENT_AMOUNT or UPDATED_TOTAL_PAYMENT_AMOUNT
+        defaultPaymentShouldBeFound("totalPaymentAmount.in=" + DEFAULT_TOTAL_PAYMENT_AMOUNT + "," + UPDATED_TOTAL_PAYMENT_AMOUNT);
+
+        // Get all the paymentList where totalPaymentAmount equals to UPDATED_TOTAL_PAYMENT_AMOUNT
+        defaultPaymentShouldNotBeFound("totalPaymentAmount.in=" + UPDATED_TOTAL_PAYMENT_AMOUNT);
+    }
+
+    @Test
+    @Transactional
+    public void getAllPaymentsByTotalPaymentAmountIsNullOrNotNull() throws Exception {
+        // Initialize the database
+        paymentRepository.saveAndFlush(payment);
+
+        // Get all the paymentList where totalPaymentAmount is not null
+        defaultPaymentShouldBeFound("totalPaymentAmount.specified=true");
+
+        // Get all the paymentList where totalPaymentAmount is null
+        defaultPaymentShouldNotBeFound("totalPaymentAmount.specified=false");
+    }
+
+    @Test
+    @Transactional
+    public void getAllPaymentsByPaymentTypeIsEqualToSomething() throws Exception {
+        // Initialize the database
+        paymentRepository.saveAndFlush(payment);
+
+        // Get all the paymentList where paymentType equals to DEFAULT_PAYMENT_TYPE
+        defaultPaymentShouldBeFound("paymentType.equals=" + DEFAULT_PAYMENT_TYPE);
+
+        // Get all the paymentList where paymentType equals to UPDATED_PAYMENT_TYPE
+        defaultPaymentShouldNotBeFound("paymentType.equals=" + UPDATED_PAYMENT_TYPE);
+    }
+
+    @Test
+    @Transactional
+    public void getAllPaymentsByPaymentTypeIsInShouldWork() throws Exception {
+        // Initialize the database
+        paymentRepository.saveAndFlush(payment);
+
+        // Get all the paymentList where paymentType in DEFAULT_PAYMENT_TYPE or UPDATED_PAYMENT_TYPE
+        defaultPaymentShouldBeFound("paymentType.in=" + DEFAULT_PAYMENT_TYPE + "," + UPDATED_PAYMENT_TYPE);
+
+        // Get all the paymentList where paymentType equals to UPDATED_PAYMENT_TYPE
+        defaultPaymentShouldNotBeFound("paymentType.in=" + UPDATED_PAYMENT_TYPE);
+    }
+
+    @Test
+    @Transactional
+    public void getAllPaymentsByPaymentTypeIsNullOrNotNull() throws Exception {
+        // Initialize the database
+        paymentRepository.saveAndFlush(payment);
+
+        // Get all the paymentList where paymentType is not null
+        defaultPaymentShouldBeFound("paymentType.specified=true");
+
+        // Get all the paymentList where paymentType is null
+        defaultPaymentShouldNotBeFound("paymentType.specified=false");
+    }
+
+    @Test
+    @Transactional
+    public void getAllPaymentsByContractorAmountIsEqualToSomething() throws Exception {
+        // Initialize the database
+        paymentRepository.saveAndFlush(payment);
+
+        // Get all the paymentList where contractorAmount equals to DEFAULT_CONTRACTOR_AMOUNT
+        defaultPaymentShouldBeFound("contractorAmount.equals=" + DEFAULT_CONTRACTOR_AMOUNT);
+
+        // Get all the paymentList where contractorAmount equals to UPDATED_CONTRACTOR_AMOUNT
+        defaultPaymentShouldNotBeFound("contractorAmount.equals=" + UPDATED_CONTRACTOR_AMOUNT);
+    }
+
+    @Test
+    @Transactional
+    public void getAllPaymentsByContractorAmountIsInShouldWork() throws Exception {
+        // Initialize the database
+        paymentRepository.saveAndFlush(payment);
+
+        // Get all the paymentList where contractorAmount in DEFAULT_CONTRACTOR_AMOUNT or UPDATED_CONTRACTOR_AMOUNT
+        defaultPaymentShouldBeFound("contractorAmount.in=" + DEFAULT_CONTRACTOR_AMOUNT + "," + UPDATED_CONTRACTOR_AMOUNT);
+
+        // Get all the paymentList where contractorAmount equals to UPDATED_CONTRACTOR_AMOUNT
+        defaultPaymentShouldNotBeFound("contractorAmount.in=" + UPDATED_CONTRACTOR_AMOUNT);
+    }
+
+    @Test
+    @Transactional
+    public void getAllPaymentsByContractorAmountIsNullOrNotNull() throws Exception {
+        // Initialize the database
+        paymentRepository.saveAndFlush(payment);
+
+        // Get all the paymentList where contractorAmount is not null
+        defaultPaymentShouldBeFound("contractorAmount.specified=true");
+
+        // Get all the paymentList where contractorAmount is null
+        defaultPaymentShouldNotBeFound("contractorAmount.specified=false");
+    }
+
+    @Test
+    @Transactional
+    public void getAllPaymentsByBusinessAmountIsEqualToSomething() throws Exception {
+        // Initialize the database
+        paymentRepository.saveAndFlush(payment);
+
+        // Get all the paymentList where businessAmount equals to DEFAULT_BUSINESS_AMOUNT
+        defaultPaymentShouldBeFound("businessAmount.equals=" + DEFAULT_BUSINESS_AMOUNT);
+
+        // Get all the paymentList where businessAmount equals to UPDATED_BUSINESS_AMOUNT
+        defaultPaymentShouldNotBeFound("businessAmount.equals=" + UPDATED_BUSINESS_AMOUNT);
+    }
+
+    @Test
+    @Transactional
+    public void getAllPaymentsByBusinessAmountIsInShouldWork() throws Exception {
+        // Initialize the database
+        paymentRepository.saveAndFlush(payment);
+
+        // Get all the paymentList where businessAmount in DEFAULT_BUSINESS_AMOUNT or UPDATED_BUSINESS_AMOUNT
+        defaultPaymentShouldBeFound("businessAmount.in=" + DEFAULT_BUSINESS_AMOUNT + "," + UPDATED_BUSINESS_AMOUNT);
+
+        // Get all the paymentList where businessAmount equals to UPDATED_BUSINESS_AMOUNT
+        defaultPaymentShouldNotBeFound("businessAmount.in=" + UPDATED_BUSINESS_AMOUNT);
+    }
+
+    @Test
+    @Transactional
+    public void getAllPaymentsByBusinessAmountIsNullOrNotNull() throws Exception {
+        // Initialize the database
+        paymentRepository.saveAndFlush(payment);
+
+        // Get all the paymentList where businessAmount is not null
+        defaultPaymentShouldBeFound("businessAmount.specified=true");
+
+        // Get all the paymentList where businessAmount is null
+        defaultPaymentShouldNotBeFound("businessAmount.specified=false");
+    }
+
+    @Test
+    @Transactional
+    public void getAllPaymentsByStartDateIsEqualToSomething() throws Exception {
+        // Initialize the database
+        paymentRepository.saveAndFlush(payment);
+
+        // Get all the paymentList where startDate equals to DEFAULT_START_DATE
+        defaultPaymentShouldBeFound("startDate.equals=" + DEFAULT_START_DATE);
+
+        // Get all the paymentList where startDate equals to UPDATED_START_DATE
+        defaultPaymentShouldNotBeFound("startDate.equals=" + UPDATED_START_DATE);
+    }
+
+    @Test
+    @Transactional
+    public void getAllPaymentsByStartDateIsInShouldWork() throws Exception {
+        // Initialize the database
+        paymentRepository.saveAndFlush(payment);
+
+        // Get all the paymentList where startDate in DEFAULT_START_DATE or UPDATED_START_DATE
+        defaultPaymentShouldBeFound("startDate.in=" + DEFAULT_START_DATE + "," + UPDATED_START_DATE);
+
+        // Get all the paymentList where startDate equals to UPDATED_START_DATE
+        defaultPaymentShouldNotBeFound("startDate.in=" + UPDATED_START_DATE);
+    }
+
+    @Test
+    @Transactional
+    public void getAllPaymentsByStartDateIsNullOrNotNull() throws Exception {
+        // Initialize the database
+        paymentRepository.saveAndFlush(payment);
+
+        // Get all the paymentList where startDate is not null
+        defaultPaymentShouldBeFound("startDate.specified=true");
+
+        // Get all the paymentList where startDate is null
+        defaultPaymentShouldNotBeFound("startDate.specified=false");
+    }
+
+    @Test
+    @Transactional
+    public void getAllPaymentsByEndDateIsEqualToSomething() throws Exception {
+        // Initialize the database
+        paymentRepository.saveAndFlush(payment);
+
+        // Get all the paymentList where endDate equals to DEFAULT_END_DATE
+        defaultPaymentShouldBeFound("endDate.equals=" + DEFAULT_END_DATE);
+
+        // Get all the paymentList where endDate equals to UPDATED_END_DATE
+        defaultPaymentShouldNotBeFound("endDate.equals=" + UPDATED_END_DATE);
+    }
+
+    @Test
+    @Transactional
+    public void getAllPaymentsByEndDateIsInShouldWork() throws Exception {
+        // Initialize the database
+        paymentRepository.saveAndFlush(payment);
+
+        // Get all the paymentList where endDate in DEFAULT_END_DATE or UPDATED_END_DATE
+        defaultPaymentShouldBeFound("endDate.in=" + DEFAULT_END_DATE + "," + UPDATED_END_DATE);
+
+        // Get all the paymentList where endDate equals to UPDATED_END_DATE
+        defaultPaymentShouldNotBeFound("endDate.in=" + UPDATED_END_DATE);
+    }
+
+    @Test
+    @Transactional
+    public void getAllPaymentsByEndDateIsNullOrNotNull() throws Exception {
+        // Initialize the database
+        paymentRepository.saveAndFlush(payment);
+
+        // Get all the paymentList where endDate is not null
+        defaultPaymentShouldBeFound("endDate.specified=true");
+
+        // Get all the paymentList where endDate is null
+        defaultPaymentShouldNotBeFound("endDate.specified=false");
+    }
+    /**
+     * Executes the search, and checks that the default entity is returned
+     */
+    private void defaultPaymentShouldBeFound(String filter) throws Exception {
+        restPaymentMockMvc.perform(get("/api/payments?sort=id,desc&" + filter))
+            .andExpect(status().isOk())
+            .andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8_VALUE))
+            .andExpect(jsonPath("$.[*].id").value(hasItem(payment.getId().intValue())))
+            .andExpect(jsonPath("$.[*].totalPaymentAmount").value(hasItem(DEFAULT_TOTAL_PAYMENT_AMOUNT.doubleValue())))
+            .andExpect(jsonPath("$.[*].paymentType").value(hasItem(DEFAULT_PAYMENT_TYPE.toString())))
+            .andExpect(jsonPath("$.[*].contractorAmount").value(hasItem(DEFAULT_CONTRACTOR_AMOUNT.doubleValue())))
+            .andExpect(jsonPath("$.[*].businessAmount").value(hasItem(DEFAULT_BUSINESS_AMOUNT.doubleValue())))
+            .andExpect(jsonPath("$.[*].startDate").value(hasItem(DEFAULT_START_DATE.toString())))
+            .andExpect(jsonPath("$.[*].endDate").value(hasItem(DEFAULT_END_DATE.toString())));
+
+        // Check, that the count call also returns 1
+        restPaymentMockMvc.perform(get("/api/payments/count?sort=id,desc&" + filter))
+            .andExpect(status().isOk())
+            .andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8_VALUE))
+            .andExpect(content().string("1"));
+    }
+
+    /**
+     * Executes the search, and checks that the default entity is not returned
+     */
+    private void defaultPaymentShouldNotBeFound(String filter) throws Exception {
+        restPaymentMockMvc.perform(get("/api/payments?sort=id,desc&" + filter))
+            .andExpect(status().isOk())
+            .andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8_VALUE))
+            .andExpect(jsonPath("$").isArray())
+            .andExpect(jsonPath("$").isEmpty());
+
+        // Check, that the count call also returns 0
+        restPaymentMockMvc.perform(get("/api/payments/count?sort=id,desc&" + filter))
+            .andExpect(status().isOk())
+            .andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8_VALUE))
+            .andExpect(content().string("0"));
+    }
+
 
     @Test
     @Transactional

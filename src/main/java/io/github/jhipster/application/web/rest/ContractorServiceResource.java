@@ -4,6 +4,8 @@ import io.github.jhipster.application.web.rest.errors.BadRequestAlertException;
 import io.github.jhipster.application.web.rest.util.HeaderUtil;
 import io.github.jhipster.application.web.rest.util.PaginationUtil;
 import io.github.jhipster.application.service.dto.ContractorServiceDTO;
+import io.github.jhipster.application.service.dto.ContractorServiceCriteria;
+import io.github.jhipster.application.service.ContractorServiceQueryService;
 import io.github.jhipster.web.util.ResponseUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -36,8 +38,11 @@ public class ContractorServiceResource {
 
     private final ContractorServiceService contractorServiceService;
 
-    public ContractorServiceResource(ContractorServiceService contractorServiceService) {
+    private final ContractorServiceQueryService contractorServiceQueryService;
+
+    public ContractorServiceResource(ContractorServiceService contractorServiceService, ContractorServiceQueryService contractorServiceQueryService) {
         this.contractorServiceService = contractorServiceService;
+        this.contractorServiceQueryService = contractorServiceQueryService;
     }
 
     /**
@@ -84,14 +89,27 @@ public class ContractorServiceResource {
      * GET  /contractor-services : get all the contractorServices.
      *
      * @param pageable the pagination information
+     * @param criteria the criterias which the requested entities should match
      * @return the ResponseEntity with status 200 (OK) and the list of contractorServices in body
      */
     @GetMapping("/contractor-services")
-    public ResponseEntity<List<ContractorServiceDTO>> getAllContractorServices(Pageable pageable) {
-        log.debug("REST request to get a page of ContractorServices");
-        Page<ContractorServiceDTO> page = contractorServiceService.findAll(pageable);
+    public ResponseEntity<List<ContractorServiceDTO>> getAllContractorServices(ContractorServiceCriteria criteria, Pageable pageable) {
+        log.debug("REST request to get ContractorServices by criteria: {}", criteria);
+        Page<ContractorServiceDTO> page = contractorServiceQueryService.findByCriteria(criteria, pageable);
         HttpHeaders headers = PaginationUtil.generatePaginationHttpHeaders(page, "/api/contractor-services");
         return ResponseEntity.ok().headers(headers).body(page.getContent());
+    }
+
+    /**
+    * GET  /contractor-services/count : count all the contractorServices.
+    *
+    * @param criteria the criterias which the requested entities should match
+    * @return the ResponseEntity with status 200 (OK) and the count in body
+    */
+    @GetMapping("/contractor-services/count")
+    public ResponseEntity<Long> countContractorServices(ContractorServiceCriteria criteria) {
+        log.debug("REST request to count ContractorServices by criteria: {}", criteria);
+        return ResponseEntity.ok().body(contractorServiceQueryService.countByCriteria(criteria));
     }
 
     /**
