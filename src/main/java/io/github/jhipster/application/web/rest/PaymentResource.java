@@ -4,6 +4,8 @@ import io.github.jhipster.application.web.rest.errors.BadRequestAlertException;
 import io.github.jhipster.application.web.rest.util.HeaderUtil;
 import io.github.jhipster.application.web.rest.util.PaginationUtil;
 import io.github.jhipster.application.service.dto.PaymentDTO;
+import io.github.jhipster.application.service.dto.PaymentCriteria;
+import io.github.jhipster.application.service.PaymentQueryService;
 import io.github.jhipster.web.util.ResponseUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -36,8 +38,11 @@ public class PaymentResource {
 
     private final PaymentService paymentService;
 
-    public PaymentResource(PaymentService paymentService) {
+    private final PaymentQueryService paymentQueryService;
+
+    public PaymentResource(PaymentService paymentService, PaymentQueryService paymentQueryService) {
         this.paymentService = paymentService;
+        this.paymentQueryService = paymentQueryService;
     }
 
     /**
@@ -84,14 +89,27 @@ public class PaymentResource {
      * GET  /payments : get all the payments.
      *
      * @param pageable the pagination information
+     * @param criteria the criterias which the requested entities should match
      * @return the ResponseEntity with status 200 (OK) and the list of payments in body
      */
     @GetMapping("/payments")
-    public ResponseEntity<List<PaymentDTO>> getAllPayments(Pageable pageable) {
-        log.debug("REST request to get a page of Payments");
-        Page<PaymentDTO> page = paymentService.findAll(pageable);
+    public ResponseEntity<List<PaymentDTO>> getAllPayments(PaymentCriteria criteria, Pageable pageable) {
+        log.debug("REST request to get Payments by criteria: {}", criteria);
+        Page<PaymentDTO> page = paymentQueryService.findByCriteria(criteria, pageable);
         HttpHeaders headers = PaginationUtil.generatePaginationHttpHeaders(page, "/api/payments");
         return ResponseEntity.ok().headers(headers).body(page.getContent());
+    }
+
+    /**
+    * GET  /payments/count : count all the payments.
+    *
+    * @param criteria the criterias which the requested entities should match
+    * @return the ResponseEntity with status 200 (OK) and the count in body
+    */
+    @GetMapping("/payments/count")
+    public ResponseEntity<Long> countPayments(PaymentCriteria criteria) {
+        log.debug("REST request to count Payments by criteria: {}", criteria);
+        return ResponseEntity.ok().body(paymentQueryService.countByCriteria(criteria));
     }
 
     /**

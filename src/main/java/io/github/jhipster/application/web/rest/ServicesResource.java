@@ -4,6 +4,8 @@ import io.github.jhipster.application.web.rest.errors.BadRequestAlertException;
 import io.github.jhipster.application.web.rest.util.HeaderUtil;
 import io.github.jhipster.application.web.rest.util.PaginationUtil;
 import io.github.jhipster.application.service.dto.ServicesDTO;
+import io.github.jhipster.application.service.dto.ServicesCriteria;
+import io.github.jhipster.application.service.ServicesQueryService;
 import io.github.jhipster.web.util.ResponseUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -36,8 +38,11 @@ public class ServicesResource {
 
     private final ServicesService servicesService;
 
-    public ServicesResource(ServicesService servicesService) {
+    private final ServicesQueryService servicesQueryService;
+
+    public ServicesResource(ServicesService servicesService, ServicesQueryService servicesQueryService) {
         this.servicesService = servicesService;
+        this.servicesQueryService = servicesQueryService;
     }
 
     /**
@@ -84,14 +89,27 @@ public class ServicesResource {
      * GET  /services : get all the services.
      *
      * @param pageable the pagination information
+     * @param criteria the criterias which the requested entities should match
      * @return the ResponseEntity with status 200 (OK) and the list of services in body
      */
     @GetMapping("/services")
-    public ResponseEntity<List<ServicesDTO>> getAllServices(Pageable pageable) {
-        log.debug("REST request to get a page of Services");
-        Page<ServicesDTO> page = servicesService.findAll(pageable);
+    public ResponseEntity<List<ServicesDTO>> getAllServices(ServicesCriteria criteria, Pageable pageable) {
+        log.debug("REST request to get Services by criteria: {}", criteria);
+        Page<ServicesDTO> page = servicesQueryService.findByCriteria(criteria, pageable);
         HttpHeaders headers = PaginationUtil.generatePaginationHttpHeaders(page, "/api/services");
         return ResponseEntity.ok().headers(headers).body(page.getContent());
+    }
+
+    /**
+    * GET  /services/count : count all the services.
+    *
+    * @param criteria the criterias which the requested entities should match
+    * @return the ResponseEntity with status 200 (OK) and the count in body
+    */
+    @GetMapping("/services/count")
+    public ResponseEntity<Long> countServices(ServicesCriteria criteria) {
+        log.debug("REST request to count Services by criteria: {}", criteria);
+        return ResponseEntity.ok().body(servicesQueryService.countByCriteria(criteria));
     }
 
     /**

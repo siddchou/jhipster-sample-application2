@@ -4,6 +4,8 @@ import io.github.jhipster.application.web.rest.errors.BadRequestAlertException;
 import io.github.jhipster.application.web.rest.util.HeaderUtil;
 import io.github.jhipster.application.web.rest.util.PaginationUtil;
 import io.github.jhipster.application.service.dto.AddressDTO;
+import io.github.jhipster.application.service.dto.AddressCriteria;
+import io.github.jhipster.application.service.AddressQueryService;
 import io.github.jhipster.web.util.ResponseUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -36,8 +38,11 @@ public class AddressResource {
 
     private final AddressService addressService;
 
-    public AddressResource(AddressService addressService) {
+    private final AddressQueryService addressQueryService;
+
+    public AddressResource(AddressService addressService, AddressQueryService addressQueryService) {
         this.addressService = addressService;
+        this.addressQueryService = addressQueryService;
     }
 
     /**
@@ -84,14 +89,27 @@ public class AddressResource {
      * GET  /addresses : get all the addresses.
      *
      * @param pageable the pagination information
+     * @param criteria the criterias which the requested entities should match
      * @return the ResponseEntity with status 200 (OK) and the list of addresses in body
      */
     @GetMapping("/addresses")
-    public ResponseEntity<List<AddressDTO>> getAllAddresses(Pageable pageable) {
-        log.debug("REST request to get a page of Addresses");
-        Page<AddressDTO> page = addressService.findAll(pageable);
+    public ResponseEntity<List<AddressDTO>> getAllAddresses(AddressCriteria criteria, Pageable pageable) {
+        log.debug("REST request to get Addresses by criteria: {}", criteria);
+        Page<AddressDTO> page = addressQueryService.findByCriteria(criteria, pageable);
         HttpHeaders headers = PaginationUtil.generatePaginationHttpHeaders(page, "/api/addresses");
         return ResponseEntity.ok().headers(headers).body(page.getContent());
+    }
+
+    /**
+    * GET  /addresses/count : count all the addresses.
+    *
+    * @param criteria the criterias which the requested entities should match
+    * @return the ResponseEntity with status 200 (OK) and the count in body
+    */
+    @GetMapping("/addresses/count")
+    public ResponseEntity<Long> countAddresses(AddressCriteria criteria) {
+        log.debug("REST request to count Addresses by criteria: {}", criteria);
+        return ResponseEntity.ok().body(addressQueryService.countByCriteria(criteria));
     }
 
     /**

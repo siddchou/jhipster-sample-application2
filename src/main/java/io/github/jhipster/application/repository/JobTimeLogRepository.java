@@ -10,6 +10,6 @@ import org.springframework.stereotype.Repository;
  */
 @SuppressWarnings("unused")
 @Repository
-public interface JobTimeLogRepository extends JpaRepository<JobTimeLog, Long> {
+public interface JobTimeLogRepository extends JpaRepository<JobTimeLog, Long>, JpaSpecificationExecutor<JobTimeLog> {
 
 }

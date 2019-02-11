@@ -3,12 +3,15 @@ package io.github.jhipster.application.web.rest;
 import io.github.jhipster.application.JhipsterSampleApplication2App;
 
 import io.github.jhipster.application.domain.Address;
+import io.github.jhipster.application.domain.AppUser;
 import io.github.jhipster.application.repository.AddressRepository;
 import io.github.jhipster.application.repository.search.AddressSearchRepository;
 import io.github.jhipster.application.service.AddressService;
 import io.github.jhipster.application.service.dto.AddressDTO;
 import io.github.jhipster.application.service.mapper.AddressMapper;
 import io.github.jhipster.application.web.rest.errors.ExceptionTranslator;
+import io.github.jhipster.application.service.dto.AddressCriteria;
+import io.github.jhipster.application.service.AddressQueryService;
 
 import org.junit.Before;
 import org.junit.Test;
@@ -96,6 +99,9 @@ public class AddressResourceIntTest {
     private AddressSearchRepository mockAddressSearchRepository;
 
     @Autowired
+    private AddressQueryService addressQueryService;
+
+    @Autowired
     private MappingJackson2HttpMessageConverter jacksonMessageConverter;
 
     @Autowired
@@ -117,7 +123,7 @@ public class AddressResourceIntTest {
     @Before
     public void setup() {
         MockitoAnnotations.initMocks(this);
-        final AddressResource addressResource = new AddressResource(addressService);
+        final AddressResource addressResource = new AddressResource(addressService, addressQueryService);
         this.restAddressMockMvc = MockMvcBuilders.standaloneSetup(addressResource)
             .setCustomArgumentResolvers(pageableArgumentResolver)
             .setControllerAdvice(exceptionTranslator)
@@ -247,6 +253,418 @@ public class AddressResourceIntTest {
             .andExpect(jsonPath("$.startDate").value(DEFAULT_START_DATE.toString()))
             .andExpect(jsonPath("$.endDate").value(DEFAULT_END_DATE.toString()));
     }
+
+    @Test
+    @Transactional
+    public void getAllAddressesByAddressNickNameIsEqualToSomething() throws Exception {
+        // Initialize the database
+        addressRepository.saveAndFlush(address);
+
+        // Get all the addressList where addressNickName equals to DEFAULT_ADDRESS_NICK_NAME
+        defaultAddressShouldBeFound("addressNickName.equals=" + DEFAULT_ADDRESS_NICK_NAME);
+
+        // Get all the addressList where addressNickName equals to UPDATED_ADDRESS_NICK_NAME
+        defaultAddressShouldNotBeFound("addressNickName.equals=" + UPDATED_ADDRESS_NICK_NAME);
+    }
+
+    @Test
+    @Transactional
+    public void getAllAddressesByAddressNickNameIsInShouldWork() throws Exception {
+        // Initialize the database
+        addressRepository.saveAndFlush(address);
+
+        // Get all the addressList where addressNickName in DEFAULT_ADDRESS_NICK_NAME or UPDATED_ADDRESS_NICK_NAME
+        defaultAddressShouldBeFound("addressNickName.in=" + DEFAULT_ADDRESS_NICK_NAME + "," + UPDATED_ADDRESS_NICK_NAME);
+
+        // Get all the addressList where addressNickName equals to UPDATED_ADDRESS_NICK_NAME
+        defaultAddressShouldNotBeFound("addressNickName.in=" + UPDATED_ADDRESS_NICK_NAME);
+    }
+
+    @Test
+    @Transactional
+    public void getAllAddressesByAddressNickNameIsNullOrNotNull() throws Exception {
+        // Initialize the database
+        addressRepository.saveAndFlush(address);
+
+        // Get all the addressList where addressNickName is not null
+        defaultAddressShouldBeFound("addressNickName.specified=true");
+
+        // Get all the addressList where addressNickName is null
+        defaultAddressShouldNotBeFound("addressNickName.specified=false");
+    }
+
+    @Test
+    @Transactional
+    public void getAllAddressesByAddressLine1IsEqualToSomething() throws Exception {
+        // Initialize the database
+        addressRepository.saveAndFlush(address);
+
+        // Get all the addressList where addressLine1 equals to DEFAULT_ADDRESS_LINE_1
+        defaultAddressShouldBeFound("addressLine1.equals=" + DEFAULT_ADDRESS_LINE_1);
+
+        // Get all the addressList where addressLine1 equals to UPDATED_ADDRESS_LINE_1
+        defaultAddressShouldNotBeFound("addressLine1.equals=" + UPDATED_ADDRESS_LINE_1);
+    }
+
+    @Test
+    @Transactional
+    public void getAllAddressesByAddressLine1IsInShouldWork() throws Exception {
+        // Initialize the database
+        addressRepository.saveAndFlush(address);
+
+        // Get all the addressList where addressLine1 in DEFAULT_ADDRESS_LINE_1 or UPDATED_ADDRESS_LINE_1
+        defaultAddressShouldBeFound("addressLine1.in=" + DEFAULT_ADDRESS_LINE_1 + "," + UPDATED_ADDRESS_LINE_1);
+
+        // Get all the addressList where addressLine1 equals to UPDATED_ADDRESS_LINE_1
+        defaultAddressShouldNotBeFound("addressLine1.in=" + UPDATED_ADDRESS_LINE_1);
+    }
+
+    @Test
+    @Transactional
+    public void getAllAddressesByAddressLine1IsNullOrNotNull() throws Exception {
+        // Initialize the database
+        addressRepository.saveAndFlush(address);
+
+        // Get all the addressList where addressLine1 is not null
+        defaultAddressShouldBeFound("addressLine1.specified=true");
+
+        // Get all the addressList where addressLine1 is null
+        defaultAddressShouldNotBeFound("addressLine1.specified=false");
+    }
+
+    @Test
+    @Transactional
+    public void getAllAddressesByAddressLine2IsEqualToSomething() throws Exception {
+        // Initialize the database
+        addressRepository.saveAndFlush(address);
+
+        // Get all the addressList where addressLine2 equals to DEFAULT_ADDRESS_LINE_2
+        defaultAddressShouldBeFound("addressLine2.equals=" + DEFAULT_ADDRESS_LINE_2);
+
+        // Get all the addressList where addressLine2 equals to UPDATED_ADDRESS_LINE_2
+        defaultAddressShouldNotBeFound("addressLine2.equals=" + UPDATED_ADDRESS_LINE_2);
+    }
+
+    @Test
+    @Transactional
+    public void getAllAddressesByAddressLine2IsInShouldWork() throws Exception {
+        // Initialize the database
+        addressRepository.saveAndFlush(address);
+
+        // Get all the addressList where addressLine2 in DEFAULT_ADDRESS_LINE_2 or UPDATED_ADDRESS_LINE_2
+        defaultAddressShouldBeFound("addressLine2.in=" + DEFAULT_ADDRESS_LINE_2 + "," + UPDATED_ADDRESS_LINE_2);
+
+        // Get all the addressList where addressLine2 equals to UPDATED_ADDRESS_LINE_2
+        defaultAddressShouldNotBeFound("addressLine2.in=" + UPDATED_ADDRESS_LINE_2);
+    }
+
+    @Test
+    @Transactional
+    public void getAllAddressesByAddressLine2IsNullOrNotNull() throws Exception {
+        // Initialize the database
+        addressRepository.saveAndFlush(address);
+
+        // Get all the addressList where addressLine2 is not null
+        defaultAddressShouldBeFound("addressLine2.specified=true");
+
+        // Get all the addressList where addressLine2 is null
+        defaultAddressShouldNotBeFound("addressLine2.specified=false");
+    }
+
+    @Test
+    @Transactional
+    public void getAllAddressesByCityIsEqualToSomething() throws Exception {
+        // Initialize the database
+        addressRepository.saveAndFlush(address);
+
+        // Get all the addressList where city equals to DEFAULT_CITY
+        defaultAddressShouldBeFound("city.equals=" + DEFAULT_CITY);
+
+        // Get all the addressList where city equals to UPDATED_CITY
+        defaultAddressShouldNotBeFound("city.equals=" + UPDATED_CITY);
+    }
+
+    @Test
+    @Transactional
+    public void getAllAddressesByCityIsInShouldWork() throws Exception {
+        // Initialize the database
+        addressRepository.saveAndFlush(address);
+
+        // Get all the addressList where city in DEFAULT_CITY or UPDATED_CITY
+        defaultAddressShouldBeFound("city.in=" + DEFAULT_CITY + "," + UPDATED_CITY);
+
+        // Get all the addressList where city equals to UPDATED_CITY
+        defaultAddressShouldNotBeFound("city.in=" + UPDATED_CITY);
+    }
+
+    @Test
+    @Transactional
+    public void getAllAddressesByCityIsNullOrNotNull() throws Exception {
+        // Initialize the database
+        addressRepository.saveAndFlush(address);
+
+        // Get all the addressList where city is not null
+        defaultAddressShouldBeFound("city.specified=true");
+
+        // Get all the addressList where city is null
+        defaultAddressShouldNotBeFound("city.specified=false");
+    }
+
+    @Test
+    @Transactional
+    public void getAllAddressesByStateIsEqualToSomething() throws Exception {
+        // Initialize the database
+        addressRepository.saveAndFlush(address);
+
+        // Get all the addressList where state equals to DEFAULT_STATE
+        defaultAddressShouldBeFound("state.equals=" + DEFAULT_STATE);
+
+        // Get all the addressList where state equals to UPDATED_STATE
+        defaultAddressShouldNotBeFound("state.equals=" + UPDATED_STATE);
+    }
+
+    @Test
+    @Transactional
+    public void getAllAddressesByStateIsInShouldWork() throws Exception {
+        // Initialize the database
+        addressRepository.saveAndFlush(address);
+
+        // Get all the addressList where state in DEFAULT_STATE or UPDATED_STATE
+        defaultAddressShouldBeFound("state.in=" + DEFAULT_STATE + "," + UPDATED_STATE);
+
+        // Get all the addressList where state equals to UPDATED_STATE
+        defaultAddressShouldNotBeFound("state.in=" + UPDATED_STATE);
+    }
+
+    @Test
+    @Transactional
+    public void getAllAddressesByStateIsNullOrNotNull() throws Exception {
+        // Initialize the database
+        addressRepository.saveAndFlush(address);
+
+        // Get all the addressList where state is not null
+        defaultAddressShouldBeFound("state.specified=true");
+
+        // Get all the addressList where state is null
+        defaultAddressShouldNotBeFound("state.specified=false");
+    }
+
+    @Test
+    @Transactional
+    public void getAllAddressesByCountryIsEqualToSomething() throws Exception {
+        // Initialize the database
+        addressRepository.saveAndFlush(address);
+
+        // Get all the addressList where country equals to DEFAULT_COUNTRY
+        defaultAddressShouldBeFound("country.equals=" + DEFAULT_COUNTRY);
+
+        // Get all the addressList where country equals to UPDATED_COUNTRY
+        defaultAddressShouldNotBeFound("country.equals=" + UPDATED_COUNTRY);
+    }
+
+    @Test
+    @Transactional
+    public void getAllAddressesByCountryIsInShouldWork() throws Exception {
+        // Initialize the database
+        addressRepository.saveAndFlush(address);
+
+        // Get all the addressList where country in DEFAULT_COUNTRY or UPDATED_COUNTRY
+        defaultAddressShouldBeFound("country.in=" + DEFAULT_COUNTRY + "," + UPDATED_COUNTRY);
+
+        // Get all the addressList where country equals to UPDATED_COUNTRY
+        defaultAddressShouldNotBeFound("country.in=" + UPDATED_COUNTRY);
+    }
+
+    @Test
+    @Transactional
+    public void getAllAddressesByCountryIsNullOrNotNull() throws Exception {
+        // Initialize the database
+        addressRepository.saveAndFlush(address);
+
+        // Get all the addressList where country is not null
+        defaultAddressShouldBeFound("country.specified=true");
+
+        // Get all the addressList where country is null
+        defaultAddressShouldNotBeFound("country.specified=false");
+    }
+
+    @Test
+    @Transactional
+    public void getAllAddressesByPostalCodeIsEqualToSomething() throws Exception {
+        // Initialize the database
+        addressRepository.saveAndFlush(address);
+
+        // Get all the addressList where postalCode equals to DEFAULT_POSTAL_CODE
+        defaultAddressShouldBeFound("postalCode.equals=" + DEFAULT_POSTAL_CODE);
+
+        // Get all the addressList where postalCode equals to UPDATED_POSTAL_CODE
+        defaultAddressShouldNotBeFound("postalCode.equals=" + UPDATED_POSTAL_CODE);
+    }
+
+    @Test
+    @Transactional
+    public void getAllAddressesByPostalCodeIsInShouldWork() throws Exception {
+        // Initialize the database
+        addressRepository.saveAndFlush(address);
+
+        // Get all the addressList where postalCode in DEFAULT_POSTAL_CODE or UPDATED_POSTAL_CODE
+        defaultAddressShouldBeFound("postalCode.in=" + DEFAULT_POSTAL_CODE + "," + UPDATED_POSTAL_CODE);
+
+        // Get all the addressList where postalCode equals to UPDATED_POSTAL_CODE
+        defaultAddressShouldNotBeFound("postalCode.in=" + UPDATED_POSTAL_CODE);
+    }
+
+    @Test
+    @Transactional
+    public void getAllAddressesByPostalCodeIsNullOrNotNull() throws Exception {
+        // Initialize the database
+        addressRepository.saveAndFlush(address);
+
+        // Get all the addressList where postalCode is not null
+        defaultAddressShouldBeFound("postalCode.specified=true");
+
+        // Get all the addressList where postalCode is null
+        defaultAddressShouldNotBeFound("postalCode.specified=false");
+    }
+
+    @Test
+    @Transactional
+    public void getAllAddressesByStartDateIsEqualToSomething() throws Exception {
+        // Initialize the database
+        addressRepository.saveAndFlush(address);
+
+        // Get all the addressList where startDate equals to DEFAULT_START_DATE
+        defaultAddressShouldBeFound("startDate.equals=" + DEFAULT_START_DATE);
+
+        // Get all the addressList where startDate equals to UPDATED_START_DATE
+        defaultAddressShouldNotBeFound("startDate.equals=" + UPDATED_START_DATE);
+    }
+
+    @Test
+    @Transactional
+    public void getAllAddressesByStartDateIsInShouldWork() throws Exception {
+        // Initialize the database
+        addressRepository.saveAndFlush(address);
+
+        // Get all the addressList where startDate in DEFAULT_START_DATE or UPDATED_START_DATE
+        defaultAddressShouldBeFound("startDate.in=" + DEFAULT_START_DATE + "," + UPDATED_START_DATE);
+
+        // Get all the addressList where startDate equals to UPDATED_START_DATE
+        defaultAddressShouldNotBeFound("startDate.in=" + UPDATED_START_DATE);
+    }
+
+    @Test
+    @Transactional
+    public void getAllAddressesByStartDateIsNullOrNotNull() throws Exception {
+        // Initialize the database
+        addressRepository.saveAndFlush(address);
+
+        // Get all the addressList where startDate is not null
+        defaultAddressShouldBeFound("startDate.specified=true");
+
+        // Get all the addressList where startDate is null
+        defaultAddressShouldNotBeFound("startDate.specified=false");
+    }
+
+    @Test
+    @Transactional
+    public void getAllAddressesByEndDateIsEqualToSomething() throws Exception {
+        // Initialize the database
+        addressRepository.saveAndFlush(address);
+
+        // Get all the addressList where endDate equals to DEFAULT_END_DATE
+        defaultAddressShouldBeFound("endDate.equals=" + DEFAULT_END_DATE);
+
+        // Get all the addressList where endDate equals to UPDATED_END_DATE
+        defaultAddressShouldNotBeFound("endDate.equals=" + UPDATED_END_DATE);
+    }
+
+    @Test
+    @Transactional
+    public void getAllAddressesByEndDateIsInShouldWork() throws Exception {
+        // Initialize the database
+        addressRepository.saveAndFlush(address);
+
+        // Get all the addressList where endDate in DEFAULT_END_DATE or UPDATED_END_DATE
+        defaultAddressShouldBeFound("endDate.in=" + DEFAULT_END_DATE + "," + UPDATED_END_DATE);
+
+        // Get all the addressList where endDate equals to UPDATED_END_DATE
+        defaultAddressShouldNotBeFound("endDate.in=" + UPDATED_END_DATE);
+    }
+
+    @Test
+    @Transactional
+    public void getAllAddressesByEndDateIsNullOrNotNull() throws Exception {
+        // Initialize the database
+        addressRepository.saveAndFlush(address);
+
+        // Get all the addressList where endDate is not null
+        defaultAddressShouldBeFound("endDate.specified=true");
+
+        // Get all the addressList where endDate is null
+        defaultAddressShouldNotBeFound("endDate.specified=false");
+    }
+
+    @Test
+    @Transactional
+    public void getAllAddressesByAppUserIsEqualToSomething() throws Exception {
+        // Initialize the database
+        AppUser appUser = AppUserResourceIntTest.createEntity(em);
+        em.persist(appUser);
+        em.flush();
+        address.setAppUser(appUser);
+        addressRepository.saveAndFlush(address);
+        Long appUserId = appUser.getId();
+
+        // Get all the addressList where appUser equals to appUserId
+        defaultAddressShouldBeFound("appUserId.equals=" + appUserId);
+
+        // Get all the addressList where appUser equals to appUserId + 1
+        defaultAddressShouldNotBeFound("appUserId.equals=" + (appUserId + 1));
+    }
+
+    /**
+     * Executes the search, and checks that the default entity is returned
+     */
+    private void defaultAddressShouldBeFound(String filter) throws Exception {
+        restAddressMockMvc.perform(get("/api/addresses?sort=id,desc&" + filter))
+            .andExpect(status().isOk())
+            .andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8_VALUE))
+            .andExpect(jsonPath("$.[*].id").value(hasItem(address.getId().intValue())))
+            .andExpect(jsonPath("$.[*].addressNickName").value(hasItem(DEFAULT_ADDRESS_NICK_NAME)))
+            .andExpect(jsonPath("$.[*].addressLine1").value(hasItem(DEFAULT_ADDRESS_LINE_1)))
+            .andExpect(jsonPath("$.[*].addressLine2").value(hasItem(DEFAULT_ADDRESS_LINE_2)))
+            .andExpect(jsonPath("$.[*].city").value(hasItem(DEFAULT_CITY)))
+            .andExpect(jsonPath("$.[*].state").value(hasItem(DEFAULT_STATE)))
+            .andExpect(jsonPath("$.[*].country").value(hasItem(DEFAULT_COUNTRY)))
+            .andExpect(jsonPath("$.[*].postalCode").value(hasItem(DEFAULT_POSTAL_CODE)))
+            .andExpect(jsonPath("$.[*].startDate").value(hasItem(DEFAULT_START_DATE.toString())))
+            .andExpect(jsonPath("$.[*].endDate").value(hasItem(DEFAULT_END_DATE.toString())));
+
+        // Check, that the count call also returns 1
+        restAddressMockMvc.perform(get("/api/addresses/count?sort=id,desc&" + filter))
+            .andExpect(status().isOk())
+            .andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8_VALUE))
+            .andExpect(content().string("1"));
+    }
+
+    /**
+     * Executes the search, and checks that the default entity is not returned
+     */
+    private void defaultAddressShouldNotBeFound(String filter) throws Exception {
+        restAddressMockMvc.perform(get("/api/addresses?sort=id,desc&" + filter))
+            .andExpect(status().isOk())
+            .andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8_VALUE))
+            .andExpect(jsonPath("$").isArray())
+            .andExpect(jsonPath("$").isEmpty());
+
+        // Check, that the count call also returns 0
+        restAddressMockMvc.perform(get("/api/addresses/count?sort=id,desc&" + filter))
+            .andExpect(status().isOk())
+            .andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8_VALUE))
+            .andExpect(content().string("0"));
+    }
+
 
     @Test
     @Transactional

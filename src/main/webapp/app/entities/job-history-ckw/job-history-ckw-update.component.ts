@@ -48,7 +48,7 @@ export class JobHistoryCkwUpdateComponent implements OnInit {
             this.endDate = this.jobHistory.endDate != null ? this.jobHistory.endDate.format(DATE_TIME_FORMAT) : null;
         });
         this.paymentService
-            .query({ filter: 'jobhistory-is-null' })
+            .query({ 'jobHistoryId.specified': 'false' })
             .pipe(
                 filter((mayBeOk: HttpResponse<IPaymentCkw[]>) => mayBeOk.ok),
                 map((response: HttpResponse<IPaymentCkw[]>) => response.body)
@@ -73,7 +73,7 @@ export class JobHistoryCkwUpdateComponent implements OnInit {
                 (res: HttpErrorResponse) => this.onError(res.message)
             );
         this.contractorServiceService
-            .query({ filter: 'jobhistory-is-null' })
+            .query({ 'jobHistoryId.specified': 'false' })
             .pipe(
                 filter((mayBeOk: HttpResponse<IContractorServiceCkw[]>) => mayBeOk.ok),
                 map((response: HttpResponse<IContractorServiceCkw[]>) => response.body)
@@ -98,7 +98,7 @@ export class JobHistoryCkwUpdateComponent implements OnInit {
                 (res: HttpErrorResponse) => this.onError(res.message)
             );
         this.userAddressMapService
-            .query({ filter: 'jobhistory-is-null' })
+            .query({ 'jobHistoryId.specified': 'false' })
             .pipe(
                 filter((mayBeOk: HttpResponse<IUserAddressMapCkw[]>) => mayBeOk.ok),
                 map((response: HttpResponse<IUserAddressMapCkw[]>) => response.body)

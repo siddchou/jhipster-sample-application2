@@ -43,7 +43,7 @@ export class UserAddressMapCkwUpdateComponent implements OnInit {
             this.endDate = this.userAddressMap.endDate != null ? this.userAddressMap.endDate.format(DATE_TIME_FORMAT) : null;
         });
         this.appUserService
-            .query({ filter: 'useraddressmap-is-null' })
+            .query({ 'userAddressMapId.specified': 'false' })
             .pipe(
                 filter((mayBeOk: HttpResponse<IAppUserCkw[]>) => mayBeOk.ok),
                 map((response: HttpResponse<IAppUserCkw[]>) => response.body)
@@ -68,7 +68,7 @@ export class UserAddressMapCkwUpdateComponent implements OnInit {
                 (res: HttpErrorResponse) => this.onError(res.message)
             );
         this.addressService
-            .query({ filter: 'useraddressmap-is-null' })
+            .query({ 'userAddressMapId.specified': 'false' })
             .pipe(
                 filter((mayBeOk: HttpResponse<IAddressCkw[]>) => mayBeOk.ok),
                 map((response: HttpResponse<IAddressCkw[]>) => response.body)

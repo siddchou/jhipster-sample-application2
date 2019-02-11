@@ -4,6 +4,8 @@ import io.github.jhipster.application.web.rest.errors.BadRequestAlertException;
 import io.github.jhipster.application.web.rest.util.HeaderUtil;
 import io.github.jhipster.application.web.rest.util.PaginationUtil;
 import io.github.jhipster.application.service.dto.JobTimeLogDTO;
+import io.github.jhipster.application.service.dto.JobTimeLogCriteria;
+import io.github.jhipster.application.service.JobTimeLogQueryService;
 import io.github.jhipster.web.util.ResponseUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -36,8 +38,11 @@ public class JobTimeLogResource {
 
     private final JobTimeLogService jobTimeLogService;
 
-    public JobTimeLogResource(JobTimeLogService jobTimeLogService) {
+    private final JobTimeLogQueryService jobTimeLogQueryService;
+
+    public JobTimeLogResource(JobTimeLogService jobTimeLogService, JobTimeLogQueryService jobTimeLogQueryService) {
         this.jobTimeLogService = jobTimeLogService;
+        this.jobTimeLogQueryService = jobTimeLogQueryService;
     }
 
     /**
@@ -84,14 +89,27 @@ public class JobTimeLogResource {
      * GET  /job-time-logs : get all the jobTimeLogs.
      *
      * @param pageable the pagination information
+     * @param criteria the criterias which the requested entities should match
      * @return the ResponseEntity with status 200 (OK) and the list of jobTimeLogs in body
      */
     @GetMapping("/job-time-logs")
-    public ResponseEntity<List<JobTimeLogDTO>> getAllJobTimeLogs(Pageable pageable) {
-        log.debug("REST request to get a page of JobTimeLogs");
-        Page<JobTimeLogDTO> page = jobTimeLogService.findAll(pageable);
+    public ResponseEntity<List<JobTimeLogDTO>> getAllJobTimeLogs(JobTimeLogCriteria criteria, Pageable pageable) {
+        log.debug("REST request to get JobTimeLogs by criteria: {}", criteria);
+        Page<JobTimeLogDTO> page = jobTimeLogQueryService.findByCriteria(criteria, pageable);
         HttpHeaders headers = PaginationUtil.generatePaginationHttpHeaders(page, "/api/job-time-logs");
         return ResponseEntity.ok().headers(headers).body(page.getContent());
+    }
+
+    /**
+    * GET  /job-time-logs/count : count all the jobTimeLogs.
+    *
+    * @param criteria the criterias which the requested entities should match
+    * @return the ResponseEntity with status 200 (OK) and the count in body
+    */
+    @GetMapping("/job-time-logs/count")
+    public ResponseEntity<Long> countJobTimeLogs(JobTimeLogCriteria criteria) {
+        log.debug("REST request to count JobTimeLogs by criteria: {}", criteria);
+        return ResponseEntity.ok().body(jobTimeLogQueryService.countByCriteria(criteria));
     }
 
     /**

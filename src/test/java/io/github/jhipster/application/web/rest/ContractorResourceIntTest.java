@@ -9,6 +9,8 @@ import io.github.jhipster.application.service.ContractorService;
 import io.github.jhipster.application.service.dto.ContractorDTO;
 import io.github.jhipster.application.service.mapper.ContractorMapper;
 import io.github.jhipster.application.web.rest.errors.ExceptionTranslator;
+import io.github.jhipster.application.service.dto.ContractorCriteria;
+import io.github.jhipster.application.service.ContractorQueryService;
 
 import org.junit.Before;
 import org.junit.Test;
@@ -90,6 +92,9 @@ public class ContractorResourceIntTest {
     private ContractorSearchRepository mockContractorSearchRepository;
 
     @Autowired
+    private ContractorQueryService contractorQueryService;
+
+    @Autowired
     private MappingJackson2HttpMessageConverter jacksonMessageConverter;
 
     @Autowired
@@ -111,7 +116,7 @@ public class ContractorResourceIntTest {
     @Before
     public void setup() {
         MockitoAnnotations.initMocks(this);
-        final ContractorResource contractorResource = new ContractorResource(contractorService);
+        final ContractorResource contractorResource = new ContractorResource(contractorService, contractorQueryService);
         this.restContractorMockMvc = MockMvcBuilders.standaloneSetup(contractorResource)
             .setCustomArgumentResolvers(pageableArgumentResolver)
             .setControllerAdvice(exceptionTranslator)
@@ -233,6 +238,319 @@ public class ContractorResourceIntTest {
             .andExpect(jsonPath("$.startDate").value(DEFAULT_START_DATE.toString()))
             .andExpect(jsonPath("$.endDate").value(DEFAULT_END_DATE.toString()));
     }
+
+    @Test
+    @Transactional
+    public void getAllContractorsByFirstNameIsEqualToSomething() throws Exception {
+        // Initialize the database
+        contractorRepository.saveAndFlush(contractor);
+
+        // Get all the contractorList where firstName equals to DEFAULT_FIRST_NAME
+        defaultContractorShouldBeFound("firstName.equals=" + DEFAULT_FIRST_NAME);
+
+        // Get all the contractorList where firstName equals to UPDATED_FIRST_NAME
+        defaultContractorShouldNotBeFound("firstName.equals=" + UPDATED_FIRST_NAME);
+    }
+
+    @Test
+    @Transactional
+    public void getAllContractorsByFirstNameIsInShouldWork() throws Exception {
+        // Initialize the database
+        contractorRepository.saveAndFlush(contractor);
+
+        // Get all the contractorList where firstName in DEFAULT_FIRST_NAME or UPDATED_FIRST_NAME
+        defaultContractorShouldBeFound("firstName.in=" + DEFAULT_FIRST_NAME + "," + UPDATED_FIRST_NAME);
+
+        // Get all the contractorList where firstName equals to UPDATED_FIRST_NAME
+        defaultContractorShouldNotBeFound("firstName.in=" + UPDATED_FIRST_NAME);
+    }
+
+    @Test
+    @Transactional
+    public void getAllContractorsByFirstNameIsNullOrNotNull() throws Exception {
+        // Initialize the database
+        contractorRepository.saveAndFlush(contractor);
+
+        // Get all the contractorList where firstName is not null
+        defaultContractorShouldBeFound("firstName.specified=true");
+
+        // Get all the contractorList where firstName is null
+        defaultContractorShouldNotBeFound("firstName.specified=false");
+    }
+
+    @Test
+    @Transactional
+    public void getAllContractorsByLastNameIsEqualToSomething() throws Exception {
+        // Initialize the database
+        contractorRepository.saveAndFlush(contractor);
+
+        // Get all the contractorList where lastName equals to DEFAULT_LAST_NAME
+        defaultContractorShouldBeFound("lastName.equals=" + DEFAULT_LAST_NAME);
+
+        // Get all the contractorList where lastName equals to UPDATED_LAST_NAME
+        defaultContractorShouldNotBeFound("lastName.equals=" + UPDATED_LAST_NAME);
+    }
+
+    @Test
+    @Transactional
+    public void getAllContractorsByLastNameIsInShouldWork() throws Exception {
+        // Initialize the database
+        contractorRepository.saveAndFlush(contractor);
+
+        // Get all the contractorList where lastName in DEFAULT_LAST_NAME or UPDATED_LAST_NAME
+        defaultContractorShouldBeFound("lastName.in=" + DEFAULT_LAST_NAME + "," + UPDATED_LAST_NAME);
+
+        // Get all the contractorList where lastName equals to UPDATED_LAST_NAME
+        defaultContractorShouldNotBeFound("lastName.in=" + UPDATED_LAST_NAME);
+    }
+
+    @Test
+    @Transactional
+    public void getAllContractorsByLastNameIsNullOrNotNull() throws Exception {
+        // Initialize the database
+        contractorRepository.saveAndFlush(contractor);
+
+        // Get all the contractorList where lastName is not null
+        defaultContractorShouldBeFound("lastName.specified=true");
+
+        // Get all the contractorList where lastName is null
+        defaultContractorShouldNotBeFound("lastName.specified=false");
+    }
+
+    @Test
+    @Transactional
+    public void getAllContractorsByEmailIsEqualToSomething() throws Exception {
+        // Initialize the database
+        contractorRepository.saveAndFlush(contractor);
+
+        // Get all the contractorList where email equals to DEFAULT_EMAIL
+        defaultContractorShouldBeFound("email.equals=" + DEFAULT_EMAIL);
+
+        // Get all the contractorList where email equals to UPDATED_EMAIL
+        defaultContractorShouldNotBeFound("email.equals=" + UPDATED_EMAIL);
+    }
+
+    @Test
+    @Transactional
+    public void getAllContractorsByEmailIsInShouldWork() throws Exception {
+        // Initialize the database
+        contractorRepository.saveAndFlush(contractor);
+
+        // Get all the contractorList where email in DEFAULT_EMAIL or UPDATED_EMAIL
+        defaultContractorShouldBeFound("email.in=" + DEFAULT_EMAIL + "," + UPDATED_EMAIL);
+
+        // Get all the contractorList where email equals to UPDATED_EMAIL
+        defaultContractorShouldNotBeFound("email.in=" + UPDATED_EMAIL);
+    }
+
+    @Test
+    @Transactional
+    public void getAllContractorsByEmailIsNullOrNotNull() throws Exception {
+        // Initialize the database
+        contractorRepository.saveAndFlush(contractor);
+
+        // Get all the contractorList where email is not null
+        defaultContractorShouldBeFound("email.specified=true");
+
+        // Get all the contractorList where email is null
+        defaultContractorShouldNotBeFound("email.specified=false");
+    }
+
+    @Test
+    @Transactional
+    public void getAllContractorsByPhoneNumberIsEqualToSomething() throws Exception {
+        // Initialize the database
+        contractorRepository.saveAndFlush(contractor);
+
+        // Get all the contractorList where phoneNumber equals to DEFAULT_PHONE_NUMBER
+        defaultContractorShouldBeFound("phoneNumber.equals=" + DEFAULT_PHONE_NUMBER);
+
+        // Get all the contractorList where phoneNumber equals to UPDATED_PHONE_NUMBER
+        defaultContractorShouldNotBeFound("phoneNumber.equals=" + UPDATED_PHONE_NUMBER);
+    }
+
+    @Test
+    @Transactional
+    public void getAllContractorsByPhoneNumberIsInShouldWork() throws Exception {
+        // Initialize the database
+        contractorRepository.saveAndFlush(contractor);
+
+        // Get all the contractorList where phoneNumber in DEFAULT_PHONE_NUMBER or UPDATED_PHONE_NUMBER
+        defaultContractorShouldBeFound("phoneNumber.in=" + DEFAULT_PHONE_NUMBER + "," + UPDATED_PHONE_NUMBER);
+
+        // Get all the contractorList where phoneNumber equals to UPDATED_PHONE_NUMBER
+        defaultContractorShouldNotBeFound("phoneNumber.in=" + UPDATED_PHONE_NUMBER);
+    }
+
+    @Test
+    @Transactional
+    public void getAllContractorsByPhoneNumberIsNullOrNotNull() throws Exception {
+        // Initialize the database
+        contractorRepository.saveAndFlush(contractor);
+
+        // Get all the contractorList where phoneNumber is not null
+        defaultContractorShouldBeFound("phoneNumber.specified=true");
+
+        // Get all the contractorList where phoneNumber is null
+        defaultContractorShouldNotBeFound("phoneNumber.specified=false");
+    }
+
+    @Test
+    @Transactional
+    public void getAllContractorsByHireDateIsEqualToSomething() throws Exception {
+        // Initialize the database
+        contractorRepository.saveAndFlush(contractor);
+
+        // Get all the contractorList where hireDate equals to DEFAULT_HIRE_DATE
+        defaultContractorShouldBeFound("hireDate.equals=" + DEFAULT_HIRE_DATE);
+
+        // Get all the contractorList where hireDate equals to UPDATED_HIRE_DATE
+        defaultContractorShouldNotBeFound("hireDate.equals=" + UPDATED_HIRE_DATE);
+    }
+
+    @Test
+    @Transactional
+    public void getAllContractorsByHireDateIsInShouldWork() throws Exception {
+        // Initialize the database
+        contractorRepository.saveAndFlush(contractor);
+
+        // Get all the contractorList where hireDate in DEFAULT_HIRE_DATE or UPDATED_HIRE_DATE
+        defaultContractorShouldBeFound("hireDate.in=" + DEFAULT_HIRE_DATE + "," + UPDATED_HIRE_DATE);
+
+        // Get all the contractorList where hireDate equals to UPDATED_HIRE_DATE
+        defaultContractorShouldNotBeFound("hireDate.in=" + UPDATED_HIRE_DATE);
+    }
+
+    @Test
+    @Transactional
+    public void getAllContractorsByHireDateIsNullOrNotNull() throws Exception {
+        // Initialize the database
+        contractorRepository.saveAndFlush(contractor);
+
+        // Get all the contractorList where hireDate is not null
+        defaultContractorShouldBeFound("hireDate.specified=true");
+
+        // Get all the contractorList where hireDate is null
+        defaultContractorShouldNotBeFound("hireDate.specified=false");
+    }
+
+    @Test
+    @Transactional
+    public void getAllContractorsByStartDateIsEqualToSomething() throws Exception {
+        // Initialize the database
+        contractorRepository.saveAndFlush(contractor);
+
+        // Get all the contractorList where startDate equals to DEFAULT_START_DATE
+        defaultContractorShouldBeFound("startDate.equals=" + DEFAULT_START_DATE);
+
+        // Get all the contractorList where startDate equals to UPDATED_START_DATE
+        defaultContractorShouldNotBeFound("startDate.equals=" + UPDATED_START_DATE);
+    }
+
+    @Test
+    @Transactional
+    public void getAllContractorsByStartDateIsInShouldWork() throws Exception {
+        // Initialize the database
+        contractorRepository.saveAndFlush(contractor);
+
+        // Get all the contractorList where startDate in DEFAULT_START_DATE or UPDATED_START_DATE
+        defaultContractorShouldBeFound("startDate.in=" + DEFAULT_START_DATE + "," + UPDATED_START_DATE);
+
+        // Get all the contractorList where startDate equals to UPDATED_START_DATE
+        defaultContractorShouldNotBeFound("startDate.in=" + UPDATED_START_DATE);
+    }
+
+    @Test
+    @Transactional
+    public void getAllContractorsByStartDateIsNullOrNotNull() throws Exception {
+        // Initialize the database
+        contractorRepository.saveAndFlush(contractor);
+
+        // Get all the contractorList where startDate is not null
+        defaultContractorShouldBeFound("startDate.specified=true");
+
+        // Get all the contractorList where startDate is null
+        defaultContractorShouldNotBeFound("startDate.specified=false");
+    }
+
+    @Test
+    @Transactional
+    public void getAllContractorsByEndDateIsEqualToSomething() throws Exception {
+        // Initialize the database
+        contractorRepository.saveAndFlush(contractor);
+
+        // Get all the contractorList where endDate equals to DEFAULT_END_DATE
+        defaultContractorShouldBeFound("endDate.equals=" + DEFAULT_END_DATE);
+
+        // Get all the contractorList where endDate equals to UPDATED_END_DATE
+        defaultContractorShouldNotBeFound("endDate.equals=" + UPDATED_END_DATE);
+    }
+
+    @Test
+    @Transactional
+    public void getAllContractorsByEndDateIsInShouldWork() throws Exception {
+        // Initialize the database
+        contractorRepository.saveAndFlush(contractor);
+
+        // Get all the contractorList where endDate in DEFAULT_END_DATE or UPDATED_END_DATE
+        defaultContractorShouldBeFound("endDate.in=" + DEFAULT_END_DATE + "," + UPDATED_END_DATE);
+
+        // Get all the contractorList where endDate equals to UPDATED_END_DATE
+        defaultContractorShouldNotBeFound("endDate.in=" + UPDATED_END_DATE);
+    }
+
+    @Test
+    @Transactional
+    public void getAllContractorsByEndDateIsNullOrNotNull() throws Exception {
+        // Initialize the database
+        contractorRepository.saveAndFlush(contractor);
+
+        // Get all the contractorList where endDate is not null
+        defaultContractorShouldBeFound("endDate.specified=true");
+
+        // Get all the contractorList where endDate is null
+        defaultContractorShouldNotBeFound("endDate.specified=false");
+    }
+    /**
+     * Executes the search, and checks that the default entity is returned
+     */
+    private void defaultContractorShouldBeFound(String filter) throws Exception {
+        restContractorMockMvc.perform(get("/api/contractors?sort=id,desc&" + filter))
+            .andExpect(status().isOk())
+            .andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8_VALUE))
+            .andExpect(jsonPath("$.[*].id").value(hasItem(contractor.getId().intValue())))
+            .andExpect(jsonPath("$.[*].firstName").value(hasItem(DEFAULT_FIRST_NAME)))
+            .andExpect(jsonPath("$.[*].lastName").value(hasItem(DEFAULT_LAST_NAME)))
+            .andExpect(jsonPath("$.[*].email").value(hasItem(DEFAULT_EMAIL)))
+            .andExpect(jsonPath("$.[*].phoneNumber").value(hasItem(DEFAULT_PHONE_NUMBER)))
+            .andExpect(jsonPath("$.[*].hireDate").value(hasItem(DEFAULT_HIRE_DATE.toString())))
+            .andExpect(jsonPath("$.[*].startDate").value(hasItem(DEFAULT_START_DATE.toString())))
+            .andExpect(jsonPath("$.[*].endDate").value(hasItem(DEFAULT_END_DATE.toString())));
+
+        // Check, that the count call also returns 1
+        restContractorMockMvc.perform(get("/api/contractors/count?sort=id,desc&" + filter))
+            .andExpect(status().isOk())
+            .andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8_VALUE))
+            .andExpect(content().string("1"));
+    }
+
+    /**
+     * Executes the search, and checks that the default entity is not returned
+     */
+    private void defaultContractorShouldNotBeFound(String filter) throws Exception {
+        restContractorMockMvc.perform(get("/api/contractors?sort=id,desc&" + filter))
+            .andExpect(status().isOk())
+            .andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8_VALUE))
+            .andExpect(jsonPath("$").isArray())
+            .andExpect(jsonPath("$").isEmpty());
+
+        // Check, that the count call also returns 0
+        restContractorMockMvc.perform(get("/api/contractors/count?sort=id,desc&" + filter))
+            .andExpect(status().isOk())
+            .andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8_VALUE))
+            .andExpect(content().string("0"));
+    }
+
 
     @Test
     @Transactional

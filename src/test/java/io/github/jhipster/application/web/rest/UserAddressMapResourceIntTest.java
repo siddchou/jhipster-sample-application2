@@ -3,12 +3,16 @@ package io.github.jhipster.application.web.rest;
 import io.github.jhipster.application.JhipsterSampleApplication2App;
 
 import io.github.jhipster.application.domain.UserAddressMap;
+import io.github.jhipster.application.domain.AppUser;
+import io.github.jhipster.application.domain.Address;
 import io.github.jhipster.application.repository.UserAddressMapRepository;
 import io.github.jhipster.application.repository.search.UserAddressMapSearchRepository;
 import io.github.jhipster.application.service.UserAddressMapService;
 import io.github.jhipster.application.service.dto.UserAddressMapDTO;
 import io.github.jhipster.application.service.mapper.UserAddressMapMapper;
 import io.github.jhipster.application.web.rest.errors.ExceptionTranslator;
+import io.github.jhipster.application.service.dto.UserAddressMapCriteria;
+import io.github.jhipster.application.service.UserAddressMapQueryService;
 
 import org.junit.Before;
 import org.junit.Test;
@@ -75,6 +79,9 @@ public class UserAddressMapResourceIntTest {
     private UserAddressMapSearchRepository mockUserAddressMapSearchRepository;
 
     @Autowired
+    private UserAddressMapQueryService userAddressMapQueryService;
+
+    @Autowired
     private MappingJackson2HttpMessageConverter jacksonMessageConverter;
 
     @Autowired
@@ -96,7 +103,7 @@ public class UserAddressMapResourceIntTest {
     @Before
     public void setup() {
         MockitoAnnotations.initMocks(this);
-        final UserAddressMapResource userAddressMapResource = new UserAddressMapResource(userAddressMapService);
+        final UserAddressMapResource userAddressMapResource = new UserAddressMapResource(userAddressMapService, userAddressMapQueryService);
         this.restUserAddressMapMockMvc = MockMvcBuilders.standaloneSetup(userAddressMapResource)
             .setCustomArgumentResolvers(pageableArgumentResolver)
             .setControllerAdvice(exceptionTranslator)
@@ -198,6 +205,157 @@ public class UserAddressMapResourceIntTest {
             .andExpect(jsonPath("$.startDate").value(DEFAULT_START_DATE.toString()))
             .andExpect(jsonPath("$.endDate").value(DEFAULT_END_DATE.toString()));
     }
+
+    @Test
+    @Transactional
+    public void getAllUserAddressMapsByStartDateIsEqualToSomething() throws Exception {
+        // Initialize the database
+        userAddressMapRepository.saveAndFlush(userAddressMap);
+
+        // Get all the userAddressMapList where startDate equals to DEFAULT_START_DATE
+        defaultUserAddressMapShouldBeFound("startDate.equals=" + DEFAULT_START_DATE);
+
+        // Get all the userAddressMapList where startDate equals to UPDATED_START_DATE
+        defaultUserAddressMapShouldNotBeFound("startDate.equals=" + UPDATED_START_DATE);
+    }
+
+    @Test
+    @Transactional
+    public void getAllUserAddressMapsByStartDateIsInShouldWork() throws Exception {
+        // Initialize the database
+        userAddressMapRepository.saveAndFlush(userAddressMap);
+
+        // Get all the userAddressMapList where startDate in DEFAULT_START_DATE or UPDATED_START_DATE
+        defaultUserAddressMapShouldBeFound("startDate.in=" + DEFAULT_START_DATE + "," + UPDATED_START_DATE);
+
+        // Get all the userAddressMapList where startDate equals to UPDATED_START_DATE
+        defaultUserAddressMapShouldNotBeFound("startDate.in=" + UPDATED_START_DATE);
+    }
+
+    @Test
+    @Transactional
+    public void getAllUserAddressMapsByStartDateIsNullOrNotNull() throws Exception {
+        // Initialize the database
+        userAddressMapRepository.saveAndFlush(userAddressMap);
+
+        // Get all the userAddressMapList where startDate is not null
+        defaultUserAddressMapShouldBeFound("startDate.specified=true");
+
+        // Get all the userAddressMapList where startDate is null
+        defaultUserAddressMapShouldNotBeFound("startDate.specified=false");
+    }
+
+    @Test
+    @Transactional
+    public void getAllUserAddressMapsByEndDateIsEqualToSomething() throws Exception {
+        // Initialize the database
+        userAddressMapRepository.saveAndFlush(userAddressMap);
+
+        // Get all the userAddressMapList where endDate equals to DEFAULT_END_DATE
+        defaultUserAddressMapShouldBeFound("endDate.equals=" + DEFAULT_END_DATE);
+
+        // Get all the userAddressMapList where endDate equals to UPDATED_END_DATE
+        defaultUserAddressMapShouldNotBeFound("endDate.equals=" + UPDATED_END_DATE);
+    }
+
+    @Test
+    @Transactional
+    public void getAllUserAddressMapsByEndDateIsInShouldWork() throws Exception {
+        // Initialize the database
+        userAddressMapRepository.saveAndFlush(userAddressMap);
+
+        // Get all the userAddressMapList where endDate in DEFAULT_END_DATE or UPDATED_END_DATE
+        defaultUserAddressMapShouldBeFound("endDate.in=" + DEFAULT_END_DATE + "," + UPDATED_END_DATE);
+
+        // Get all the userAddressMapList where endDate equals to UPDATED_END_DATE
+        defaultUserAddressMapShouldNotBeFound("endDate.in=" + UPDATED_END_DATE);
+    }
+
+    @Test
+    @Transactional
+    public void getAllUserAddressMapsByEndDateIsNullOrNotNull() throws Exception {
+        // Initialize the database
+        userAddressMapRepository.saveAndFlush(userAddressMap);
+
+        // Get all the userAddressMapList where endDate is not null
+        defaultUserAddressMapShouldBeFound("endDate.specified=true");
+
+        // Get all the userAddressMapList where endDate is null
+        defaultUserAddressMapShouldNotBeFound("endDate.specified=false");
+    }
+
+    @Test
+    @Transactional
+    public void getAllUserAddressMapsByAppUserIsEqualToSomething() throws Exception {
+        // Initialize the database
+        AppUser appUser = AppUserResourceIntTest.createEntity(em);
+        em.persist(appUser);
+        em.flush();
+        userAddressMap.setAppUser(appUser);
+        userAddressMapRepository.saveAndFlush(userAddressMap);
+        Long appUserId = appUser.getId();
+
+        // Get all the userAddressMapList where appUser equals to appUserId
+        defaultUserAddressMapShouldBeFound("appUserId.equals=" + appUserId);
+
+        // Get all the userAddressMapList where appUser equals to appUserId + 1
+        defaultUserAddressMapShouldNotBeFound("appUserId.equals=" + (appUserId + 1));
+    }
+
+
+    @Test
+    @Transactional
+    public void getAllUserAddressMapsByAddressIsEqualToSomething() throws Exception {
+        // Initialize the database
+        Address address = AddressResourceIntTest.createEntity(em);
+        em.persist(address);
+        em.flush();
+        userAddressMap.setAddress(address);
+        userAddressMapRepository.saveAndFlush(userAddressMap);
+        Long addressId = address.getId();
+
+        // Get all the userAddressMapList where address equals to addressId
+        defaultUserAddressMapShouldBeFound("addressId.equals=" + addressId);
+
+        // Get all the userAddressMapList where address equals to addressId + 1
+        defaultUserAddressMapShouldNotBeFound("addressId.equals=" + (addressId + 1));
+    }
+
+    /**
+     * Executes the search, and checks that the default entity is returned
+     */
+    private void defaultUserAddressMapShouldBeFound(String filter) throws Exception {
+        restUserAddressMapMockMvc.perform(get("/api/user-address-maps?sort=id,desc&" + filter))
+            .andExpect(status().isOk())
+            .andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8_VALUE))
+            .andExpect(jsonPath("$.[*].id").value(hasItem(userAddressMap.getId().intValue())))
+            .andExpect(jsonPath("$.[*].startDate").value(hasItem(DEFAULT_START_DATE.toString())))
+            .andExpect(jsonPath("$.[*].endDate").value(hasItem(DEFAULT_END_DATE.toString())));
+
+        // Check, that the count call also returns 1
+        restUserAddressMapMockMvc.perform(get("/api/user-address-maps/count?sort=id,desc&" + filter))
+            .andExpect(status().isOk())
+            .andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8_VALUE))
+            .andExpect(content().string("1"));
+    }
+
+    /**
+     * Executes the search, and checks that the default entity is not returned
+     */
+    private void defaultUserAddressMapShouldNotBeFound(String filter) throws Exception {
+        restUserAddressMapMockMvc.perform(get("/api/user-address-maps?sort=id,desc&" + filter))
+            .andExpect(status().isOk())
+            .andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8_VALUE))
+            .andExpect(jsonPath("$").isArray())
+            .andExpect(jsonPath("$").isEmpty());
+
+        // Check, that the count call also returns 0
+        restUserAddressMapMockMvc.perform(get("/api/user-address-maps/count?sort=id,desc&" + filter))
+            .andExpect(status().isOk())
+            .andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8_VALUE))
+            .andExpect(content().string("0"));
+    }
+
 
     @Test
     @Transactional

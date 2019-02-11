@@ -4,6 +4,8 @@ import io.github.jhipster.application.web.rest.errors.BadRequestAlertException;
 import io.github.jhipster.application.web.rest.util.HeaderUtil;
 import io.github.jhipster.application.web.rest.util.PaginationUtil;
 import io.github.jhipster.application.service.dto.UserAddressMapDTO;
+import io.github.jhipster.application.service.dto.UserAddressMapCriteria;
+import io.github.jhipster.application.service.UserAddressMapQueryService;
 import io.github.jhipster.web.util.ResponseUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -36,8 +38,11 @@ public class UserAddressMapResource {
 
     private final UserAddressMapService userAddressMapService;
 
-    public UserAddressMapResource(UserAddressMapService userAddressMapService) {
+    private final UserAddressMapQueryService userAddressMapQueryService;
+
+    public UserAddressMapResource(UserAddressMapService userAddressMapService, UserAddressMapQueryService userAddressMapQueryService) {
         this.userAddressMapService = userAddressMapService;
+        this.userAddressMapQueryService = userAddressMapQueryService;
     }
 
     /**
@@ -84,14 +89,27 @@ public class UserAddressMapResource {
      * GET  /user-address-maps : get all the userAddressMaps.
      *
      * @param pageable the pagination information
+     * @param criteria the criterias which the requested entities should match
      * @return the ResponseEntity with status 200 (OK) and the list of userAddressMaps in body
      */
     @GetMapping("/user-address-maps")
-    public ResponseEntity<List<UserAddressMapDTO>> getAllUserAddressMaps(Pageable pageable) {
-        log.debug("REST request to get a page of UserAddressMaps");
-        Page<UserAddressMapDTO> page = userAddressMapService.findAll(pageable);
+    public ResponseEntity<List<UserAddressMapDTO>> getAllUserAddressMaps(UserAddressMapCriteria criteria, Pageable pageable) {
+        log.debug("REST request to get UserAddressMaps by criteria: {}", criteria);
+        Page<UserAddressMapDTO> page = userAddressMapQueryService.findByCriteria(criteria, pageable);
         HttpHeaders headers = PaginationUtil.generatePaginationHttpHeaders(page, "/api/user-address-maps");
         return ResponseEntity.ok().headers(headers).body(page.getContent());
+    }
+
+    /**
+    * GET  /user-address-maps/count : count all the userAddressMaps.
+    *
+    * @param criteria the criterias which the requested entities should match
+    * @return the ResponseEntity with status 200 (OK) and the count in body
+    */
+    @GetMapping("/user-address-maps/count")
+    public ResponseEntity<Long> countUserAddressMaps(UserAddressMapCriteria criteria) {
+        log.debug("REST request to count UserAddressMaps by criteria: {}", criteria);
+        return ResponseEntity.ok().body(userAddressMapQueryService.countByCriteria(criteria));
     }
 
     /**

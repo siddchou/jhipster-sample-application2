@@ -4,6 +4,8 @@ import io.github.jhipster.application.web.rest.errors.BadRequestAlertException;
 import io.github.jhipster.application.web.rest.util.HeaderUtil;
 import io.github.jhipster.application.web.rest.util.PaginationUtil;
 import io.github.jhipster.application.service.dto.JobHistoryDTO;
+import io.github.jhipster.application.service.dto.JobHistoryCriteria;
+import io.github.jhipster.application.service.JobHistoryQueryService;
 import io.github.jhipster.web.util.ResponseUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -36,8 +38,11 @@ public class JobHistoryResource {
 
     private final JobHistoryService jobHistoryService;
 
-    public JobHistoryResource(JobHistoryService jobHistoryService) {
+    private final JobHistoryQueryService jobHistoryQueryService;
+
+    public JobHistoryResource(JobHistoryService jobHistoryService, JobHistoryQueryService jobHistoryQueryService) {
         this.jobHistoryService = jobHistoryService;
+        this.jobHistoryQueryService = jobHistoryQueryService;
     }
 
     /**
@@ -84,14 +89,27 @@ public class JobHistoryResource {
      * GET  /job-histories : get all the jobHistories.
      *
      * @param pageable the pagination information
+     * @param criteria the criterias which the requested entities should match
      * @return the ResponseEntity with status 200 (OK) and the list of jobHistories in body
      */
     @GetMapping("/job-histories")
-    public ResponseEntity<List<JobHistoryDTO>> getAllJobHistories(Pageable pageable) {
-        log.debug("REST request to get a page of JobHistories");
-        Page<JobHistoryDTO> page = jobHistoryService.findAll(pageable);
+    public ResponseEntity<List<JobHistoryDTO>> getAllJobHistories(JobHistoryCriteria criteria, Pageable pageable) {
+        log.debug("REST request to get JobHistories by criteria: {}", criteria);
+        Page<JobHistoryDTO> page = jobHistoryQueryService.findByCriteria(criteria, pageable);
         HttpHeaders headers = PaginationUtil.generatePaginationHttpHeaders(page, "/api/job-histories");
         return ResponseEntity.ok().headers(headers).body(page.getContent());
+    }
+
+    /**
+    * GET  /job-histories/count : count all the jobHistories.
+    *
+    * @param criteria the criterias which the requested entities should match
+    * @return the ResponseEntity with status 200 (OK) and the count in body
+    */
+    @GetMapping("/job-histories/count")
+    public ResponseEntity<Long> countJobHistories(JobHistoryCriteria criteria) {
+        log.debug("REST request to count JobHistories by criteria: {}", criteria);
+        return ResponseEntity.ok().body(jobHistoryQueryService.countByCriteria(criteria));
     }
 
     /**

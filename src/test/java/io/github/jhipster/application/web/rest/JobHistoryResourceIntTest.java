@@ -3,12 +3,18 @@ package io.github.jhipster.application.web.rest;
 import io.github.jhipster.application.JhipsterSampleApplication2App;
 
 import io.github.jhipster.application.domain.JobHistory;
+import io.github.jhipster.application.domain.Payment;
+import io.github.jhipster.application.domain.ContractorService;
+import io.github.jhipster.application.domain.UserAddressMap;
+import io.github.jhipster.application.domain.JobTimeLog;
 import io.github.jhipster.application.repository.JobHistoryRepository;
 import io.github.jhipster.application.repository.search.JobHistorySearchRepository;
 import io.github.jhipster.application.service.JobHistoryService;
 import io.github.jhipster.application.service.dto.JobHistoryDTO;
 import io.github.jhipster.application.service.mapper.JobHistoryMapper;
 import io.github.jhipster.application.web.rest.errors.ExceptionTranslator;
+import io.github.jhipster.application.service.dto.JobHistoryCriteria;
+import io.github.jhipster.application.service.JobHistoryQueryService;
 
 import org.junit.Before;
 import org.junit.Test;
@@ -79,6 +85,9 @@ public class JobHistoryResourceIntTest {
     private JobHistorySearchRepository mockJobHistorySearchRepository;
 
     @Autowired
+    private JobHistoryQueryService jobHistoryQueryService;
+
+    @Autowired
     private MappingJackson2HttpMessageConverter jacksonMessageConverter;
 
     @Autowired
@@ -100,7 +109,7 @@ public class JobHistoryResourceIntTest {
     @Before
     public void setup() {
         MockitoAnnotations.initMocks(this);
-        final JobHistoryResource jobHistoryResource = new JobHistoryResource(jobHistoryService);
+        final JobHistoryResource jobHistoryResource = new JobHistoryResource(jobHistoryService, jobHistoryQueryService);
         this.restJobHistoryMockMvc = MockMvcBuilders.standaloneSetup(jobHistoryResource)
             .setCustomArgumentResolvers(pageableArgumentResolver)
             .setControllerAdvice(exceptionTranslator)
@@ -206,6 +215,235 @@ public class JobHistoryResourceIntTest {
             .andExpect(jsonPath("$.endDate").value(DEFAULT_END_DATE.toString()))
             .andExpect(jsonPath("$.jobStatus").value(DEFAULT_JOB_STATUS.toString()));
     }
+
+    @Test
+    @Transactional
+    public void getAllJobHistoriesByStartDateIsEqualToSomething() throws Exception {
+        // Initialize the database
+        jobHistoryRepository.saveAndFlush(jobHistory);
+
+        // Get all the jobHistoryList where startDate equals to DEFAULT_START_DATE
+        defaultJobHistoryShouldBeFound("startDate.equals=" + DEFAULT_START_DATE);
+
+        // Get all the jobHistoryList where startDate equals to UPDATED_START_DATE
+        defaultJobHistoryShouldNotBeFound("startDate.equals=" + UPDATED_START_DATE);
+    }
+
+    @Test
+    @Transactional
+    public void getAllJobHistoriesByStartDateIsInShouldWork() throws Exception {
+        // Initialize the database
+        jobHistoryRepository.saveAndFlush(jobHistory);
+
+        // Get all the jobHistoryList where startDate in DEFAULT_START_DATE or UPDATED_START_DATE
+        defaultJobHistoryShouldBeFound("startDate.in=" + DEFAULT_START_DATE + "," + UPDATED_START_DATE);
+
+        // Get all the jobHistoryList where startDate equals to UPDATED_START_DATE
+        defaultJobHistoryShouldNotBeFound("startDate.in=" + UPDATED_START_DATE);
+    }
+
+    @Test
+    @Transactional
+    public void getAllJobHistoriesByStartDateIsNullOrNotNull() throws Exception {
+        // Initialize the database
+        jobHistoryRepository.saveAndFlush(jobHistory);
+
+        // Get all the jobHistoryList where startDate is not null
+        defaultJobHistoryShouldBeFound("startDate.specified=true");
+
+        // Get all the jobHistoryList where startDate is null
+        defaultJobHistoryShouldNotBeFound("startDate.specified=false");
+    }
+
+    @Test
+    @Transactional
+    public void getAllJobHistoriesByEndDateIsEqualToSomething() throws Exception {
+        // Initialize the database
+        jobHistoryRepository.saveAndFlush(jobHistory);
+
+        // Get all the jobHistoryList where endDate equals to DEFAULT_END_DATE
+        defaultJobHistoryShouldBeFound("endDate.equals=" + DEFAULT_END_DATE);
+
+        // Get all the jobHistoryList where endDate equals to UPDATED_END_DATE
+        defaultJobHistoryShouldNotBeFound("endDate.equals=" + UPDATED_END_DATE);
+    }
+
+    @Test
+    @Transactional
+    public void getAllJobHistoriesByEndDateIsInShouldWork() throws Exception {
+        // Initialize the database
+        jobHistoryRepository.saveAndFlush(jobHistory);
+
+        // Get all the jobHistoryList where endDate in DEFAULT_END_DATE or UPDATED_END_DATE
+        defaultJobHistoryShouldBeFound("endDate.in=" + DEFAULT_END_DATE + "," + UPDATED_END_DATE);
+
+        // Get all the jobHistoryList where endDate equals to UPDATED_END_DATE
+        defaultJobHistoryShouldNotBeFound("endDate.in=" + UPDATED_END_DATE);
+    }
+
+    @Test
+    @Transactional
+    public void getAllJobHistoriesByEndDateIsNullOrNotNull() throws Exception {
+        // Initialize the database
+        jobHistoryRepository.saveAndFlush(jobHistory);
+
+        // Get all the jobHistoryList where endDate is not null
+        defaultJobHistoryShouldBeFound("endDate.specified=true");
+
+        // Get all the jobHistoryList where endDate is null
+        defaultJobHistoryShouldNotBeFound("endDate.specified=false");
+    }
+
+    @Test
+    @Transactional
+    public void getAllJobHistoriesByJobStatusIsEqualToSomething() throws Exception {
+        // Initialize the database
+        jobHistoryRepository.saveAndFlush(jobHistory);
+
+        // Get all the jobHistoryList where jobStatus equals to DEFAULT_JOB_STATUS
+        defaultJobHistoryShouldBeFound("jobStatus.equals=" + DEFAULT_JOB_STATUS);
+
+        // Get all the jobHistoryList where jobStatus equals to UPDATED_JOB_STATUS
+        defaultJobHistoryShouldNotBeFound("jobStatus.equals=" + UPDATED_JOB_STATUS);
+    }
+
+    @Test
+    @Transactional
+    public void getAllJobHistoriesByJobStatusIsInShouldWork() throws Exception {
+        // Initialize the database
+        jobHistoryRepository.saveAndFlush(jobHistory);
+
+        // Get all the jobHistoryList where jobStatus in DEFAULT_JOB_STATUS or UPDATED_JOB_STATUS
+        defaultJobHistoryShouldBeFound("jobStatus.in=" + DEFAULT_JOB_STATUS + "," + UPDATED_JOB_STATUS);
+
+        // Get all the jobHistoryList where jobStatus equals to UPDATED_JOB_STATUS
+        defaultJobHistoryShouldNotBeFound("jobStatus.in=" + UPDATED_JOB_STATUS);
+    }
+
+    @Test
+    @Transactional
+    public void getAllJobHistoriesByJobStatusIsNullOrNotNull() throws Exception {
+        // Initialize the database
+        jobHistoryRepository.saveAndFlush(jobHistory);
+
+        // Get all the jobHistoryList where jobStatus is not null
+        defaultJobHistoryShouldBeFound("jobStatus.specified=true");
+
+        // Get all the jobHistoryList where jobStatus is null
+        defaultJobHistoryShouldNotBeFound("jobStatus.specified=false");
+    }
+
+    @Test
+    @Transactional
+    public void getAllJobHistoriesByPaymentIsEqualToSomething() throws Exception {
+        // Initialize the database
+        Payment payment = PaymentResourceIntTest.createEntity(em);
+        em.persist(payment);
+        em.flush();
+        jobHistory.setPayment(payment);
+        jobHistoryRepository.saveAndFlush(jobHistory);
+        Long paymentId = payment.getId();
+
+        // Get all the jobHistoryList where payment equals to paymentId
+        defaultJobHistoryShouldBeFound("paymentId.equals=" + paymentId);
+
+        // Get all the jobHistoryList where payment equals to paymentId + 1
+        defaultJobHistoryShouldNotBeFound("paymentId.equals=" + (paymentId + 1));
+    }
+
+
+    @Test
+    @Transactional
+    public void getAllJobHistoriesByContractorServiceIsEqualToSomething() throws Exception {
+        // Initialize the database
+        ContractorService contractorService = ContractorServiceResourceIntTest.createEntity(em);
+        em.persist(contractorService);
+        em.flush();
+        jobHistory.setContractorService(contractorService);
+        jobHistoryRepository.saveAndFlush(jobHistory);
+        Long contractorServiceId = contractorService.getId();
+
+        // Get all the jobHistoryList where contractorService equals to contractorServiceId
+        defaultJobHistoryShouldBeFound("contractorServiceId.equals=" + contractorServiceId);
+
+        // Get all the jobHistoryList where contractorService equals to contractorServiceId + 1
+        defaultJobHistoryShouldNotBeFound("contractorServiceId.equals=" + (contractorServiceId + 1));
+    }
+
+
+    @Test
+    @Transactional
+    public void getAllJobHistoriesByUserAddressMapIsEqualToSomething() throws Exception {
+        // Initialize the database
+        UserAddressMap userAddressMap = UserAddressMapResourceIntTest.createEntity(em);
+        em.persist(userAddressMap);
+        em.flush();
+        jobHistory.setUserAddressMap(userAddressMap);
+        jobHistoryRepository.saveAndFlush(jobHistory);
+        Long userAddressMapId = userAddressMap.getId();
+
+        // Get all the jobHistoryList where userAddressMap equals to userAddressMapId
+        defaultJobHistoryShouldBeFound("userAddressMapId.equals=" + userAddressMapId);
+
+        // Get all the jobHistoryList where userAddressMap equals to userAddressMapId + 1
+        defaultJobHistoryShouldNotBeFound("userAddressMapId.equals=" + (userAddressMapId + 1));
+    }
+
+
+    @Test
+    @Transactional
+    public void getAllJobHistoriesByJobTimeLogIsEqualToSomething() throws Exception {
+        // Initialize the database
+        JobTimeLog jobTimeLog = JobTimeLogResourceIntTest.createEntity(em);
+        em.persist(jobTimeLog);
+        em.flush();
+        jobHistory.addJobTimeLog(jobTimeLog);
+        jobHistoryRepository.saveAndFlush(jobHistory);
+        Long jobTimeLogId = jobTimeLog.getId();
+
+        // Get all the jobHistoryList where jobTimeLog equals to jobTimeLogId
+        defaultJobHistoryShouldBeFound("jobTimeLogId.equals=" + jobTimeLogId);
+
+        // Get all the jobHistoryList where jobTimeLog equals to jobTimeLogId + 1
+        defaultJobHistoryShouldNotBeFound("jobTimeLogId.equals=" + (jobTimeLogId + 1));
+    }
+
+    /**
+     * Executes the search, and checks that the default entity is returned
+     */
+    private void defaultJobHistoryShouldBeFound(String filter) throws Exception {
+        restJobHistoryMockMvc.perform(get("/api/job-histories?sort=id,desc&" + filter))
+            .andExpect(status().isOk())
+            .andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8_VALUE))
+            .andExpect(jsonPath("$.[*].id").value(hasItem(jobHistory.getId().intValue())))
+            .andExpect(jsonPath("$.[*].startDate").value(hasItem(DEFAULT_START_DATE.toString())))
+            .andExpect(jsonPath("$.[*].endDate").value(hasItem(DEFAULT_END_DATE.toString())))
+            .andExpect(jsonPath("$.[*].jobStatus").value(hasItem(DEFAULT_JOB_STATUS.toString())));
+
+        // Check, that the count call also returns 1
+        restJobHistoryMockMvc.perform(get("/api/job-histories/count?sort=id,desc&" + filter))
+            .andExpect(status().isOk())
+            .andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8_VALUE))
+            .andExpect(content().string("1"));
+    }
+
+    /**
+     * Executes the search, and checks that the default entity is not returned
+     */
+    private void defaultJobHistoryShouldNotBeFound(String filter) throws Exception {
+        restJobHistoryMockMvc.perform(get("/api/job-histories?sort=id,desc&" + filter))
+            .andExpect(status().isOk())
+            .andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8_VALUE))
+            .andExpect(jsonPath("$").isArray())
+            .andExpect(jsonPath("$").isEmpty());
+
+        // Check, that the count call also returns 0
+        restJobHistoryMockMvc.perform(get("/api/job-histories/count?sort=id,desc&" + filter))
+            .andExpect(status().isOk())
+            .andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8_VALUE))
+            .andExpect(content().string("0"));
+    }
+
 
     @Test
     @Transactional

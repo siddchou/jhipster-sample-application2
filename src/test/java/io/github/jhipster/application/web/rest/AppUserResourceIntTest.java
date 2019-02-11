@@ -3,12 +3,15 @@ package io.github.jhipster.application.web.rest;
 import io.github.jhipster.application.JhipsterSampleApplication2App;
 
 import io.github.jhipster.application.domain.AppUser;
+import io.github.jhipster.application.domain.Address;
 import io.github.jhipster.application.repository.AppUserRepository;
 import io.github.jhipster.application.repository.search.AppUserSearchRepository;
 import io.github.jhipster.application.service.AppUserService;
 import io.github.jhipster.application.service.dto.AppUserDTO;
 import io.github.jhipster.application.service.mapper.AppUserMapper;
 import io.github.jhipster.application.web.rest.errors.ExceptionTranslator;
+import io.github.jhipster.application.service.dto.AppUserCriteria;
+import io.github.jhipster.application.service.AppUserQueryService;
 
 import org.junit.Before;
 import org.junit.Test;
@@ -87,6 +90,9 @@ public class AppUserResourceIntTest {
     private AppUserSearchRepository mockAppUserSearchRepository;
 
     @Autowired
+    private AppUserQueryService appUserQueryService;
+
+    @Autowired
     private MappingJackson2HttpMessageConverter jacksonMessageConverter;
 
     @Autowired
@@ -108,7 +114,7 @@ public class AppUserResourceIntTest {
     @Before
     public void setup() {
         MockitoAnnotations.initMocks(this);
-        final AppUserResource appUserResource = new AppUserResource(appUserService);
+        final AppUserResource appUserResource = new AppUserResource(appUserService, appUserQueryService);
         this.restAppUserMockMvc = MockMvcBuilders.standaloneSetup(appUserResource)
             .setCustomArgumentResolvers(pageableArgumentResolver)
             .setControllerAdvice(exceptionTranslator)
@@ -226,6 +232,298 @@ public class AppUserResourceIntTest {
             .andExpect(jsonPath("$.startDate").value(DEFAULT_START_DATE.toString()))
             .andExpect(jsonPath("$.endDate").value(DEFAULT_END_DATE.toString()));
     }
+
+    @Test
+    @Transactional
+    public void getAllAppUsersByFirstNameIsEqualToSomething() throws Exception {
+        // Initialize the database
+        appUserRepository.saveAndFlush(appUser);
+
+        // Get all the appUserList where firstName equals to DEFAULT_FIRST_NAME
+        defaultAppUserShouldBeFound("firstName.equals=" + DEFAULT_FIRST_NAME);
+
+        // Get all the appUserList where firstName equals to UPDATED_FIRST_NAME
+        defaultAppUserShouldNotBeFound("firstName.equals=" + UPDATED_FIRST_NAME);
+    }
+
+    @Test
+    @Transactional
+    public void getAllAppUsersByFirstNameIsInShouldWork() throws Exception {
+        // Initialize the database
+        appUserRepository.saveAndFlush(appUser);
+
+        // Get all the appUserList where firstName in DEFAULT_FIRST_NAME or UPDATED_FIRST_NAME
+        defaultAppUserShouldBeFound("firstName.in=" + DEFAULT_FIRST_NAME + "," + UPDATED_FIRST_NAME);
+
+        // Get all the appUserList where firstName equals to UPDATED_FIRST_NAME
+        defaultAppUserShouldNotBeFound("firstName.in=" + UPDATED_FIRST_NAME);
+    }
+
+    @Test
+    @Transactional
+    public void getAllAppUsersByFirstNameIsNullOrNotNull() throws Exception {
+        // Initialize the database
+        appUserRepository.saveAndFlush(appUser);
+
+        // Get all the appUserList where firstName is not null
+        defaultAppUserShouldBeFound("firstName.specified=true");
+
+        // Get all the appUserList where firstName is null
+        defaultAppUserShouldNotBeFound("firstName.specified=false");
+    }
+
+    @Test
+    @Transactional
+    public void getAllAppUsersByLastNameIsEqualToSomething() throws Exception {
+        // Initialize the database
+        appUserRepository.saveAndFlush(appUser);
+
+        // Get all the appUserList where lastName equals to DEFAULT_LAST_NAME
+        defaultAppUserShouldBeFound("lastName.equals=" + DEFAULT_LAST_NAME);
+
+        // Get all the appUserList where lastName equals to UPDATED_LAST_NAME
+        defaultAppUserShouldNotBeFound("lastName.equals=" + UPDATED_LAST_NAME);
+    }
+
+    @Test
+    @Transactional
+    public void getAllAppUsersByLastNameIsInShouldWork() throws Exception {
+        // Initialize the database
+        appUserRepository.saveAndFlush(appUser);
+
+        // Get all the appUserList where lastName in DEFAULT_LAST_NAME or UPDATED_LAST_NAME
+        defaultAppUserShouldBeFound("lastName.in=" + DEFAULT_LAST_NAME + "," + UPDATED_LAST_NAME);
+
+        // Get all the appUserList where lastName equals to UPDATED_LAST_NAME
+        defaultAppUserShouldNotBeFound("lastName.in=" + UPDATED_LAST_NAME);
+    }
+
+    @Test
+    @Transactional
+    public void getAllAppUsersByLastNameIsNullOrNotNull() throws Exception {
+        // Initialize the database
+        appUserRepository.saveAndFlush(appUser);
+
+        // Get all the appUserList where lastName is not null
+        defaultAppUserShouldBeFound("lastName.specified=true");
+
+        // Get all the appUserList where lastName is null
+        defaultAppUserShouldNotBeFound("lastName.specified=false");
+    }
+
+    @Test
+    @Transactional
+    public void getAllAppUsersByEmailIsEqualToSomething() throws Exception {
+        // Initialize the database
+        appUserRepository.saveAndFlush(appUser);
+
+        // Get all the appUserList where email equals to DEFAULT_EMAIL
+        defaultAppUserShouldBeFound("email.equals=" + DEFAULT_EMAIL);
+
+        // Get all the appUserList where email equals to UPDATED_EMAIL
+        defaultAppUserShouldNotBeFound("email.equals=" + UPDATED_EMAIL);
+    }
+
+    @Test
+    @Transactional
+    public void getAllAppUsersByEmailIsInShouldWork() throws Exception {
+        // Initialize the database
+        appUserRepository.saveAndFlush(appUser);
+
+        // Get all the appUserList where email in DEFAULT_EMAIL or UPDATED_EMAIL
+        defaultAppUserShouldBeFound("email.in=" + DEFAULT_EMAIL + "," + UPDATED_EMAIL);
+
+        // Get all the appUserList where email equals to UPDATED_EMAIL
+        defaultAppUserShouldNotBeFound("email.in=" + UPDATED_EMAIL);
+    }
+
+    @Test
+    @Transactional
+    public void getAllAppUsersByEmailIsNullOrNotNull() throws Exception {
+        // Initialize the database
+        appUserRepository.saveAndFlush(appUser);
+
+        // Get all the appUserList where email is not null
+        defaultAppUserShouldBeFound("email.specified=true");
+
+        // Get all the appUserList where email is null
+        defaultAppUserShouldNotBeFound("email.specified=false");
+    }
+
+    @Test
+    @Transactional
+    public void getAllAppUsersByPhoneNumberIsEqualToSomething() throws Exception {
+        // Initialize the database
+        appUserRepository.saveAndFlush(appUser);
+
+        // Get all the appUserList where phoneNumber equals to DEFAULT_PHONE_NUMBER
+        defaultAppUserShouldBeFound("phoneNumber.equals=" + DEFAULT_PHONE_NUMBER);
+
+        // Get all the appUserList where phoneNumber equals to UPDATED_PHONE_NUMBER
+        defaultAppUserShouldNotBeFound("phoneNumber.equals=" + UPDATED_PHONE_NUMBER);
+    }
+
+    @Test
+    @Transactional
+    public void getAllAppUsersByPhoneNumberIsInShouldWork() throws Exception {
+        // Initialize the database
+        appUserRepository.saveAndFlush(appUser);
+
+        // Get all the appUserList where phoneNumber in DEFAULT_PHONE_NUMBER or UPDATED_PHONE_NUMBER
+        defaultAppUserShouldBeFound("phoneNumber.in=" + DEFAULT_PHONE_NUMBER + "," + UPDATED_PHONE_NUMBER);
+
+        // Get all the appUserList where phoneNumber equals to UPDATED_PHONE_NUMBER
+        defaultAppUserShouldNotBeFound("phoneNumber.in=" + UPDATED_PHONE_NUMBER);
+    }
+
+    @Test
+    @Transactional
+    public void getAllAppUsersByPhoneNumberIsNullOrNotNull() throws Exception {
+        // Initialize the database
+        appUserRepository.saveAndFlush(appUser);
+
+        // Get all the appUserList where phoneNumber is not null
+        defaultAppUserShouldBeFound("phoneNumber.specified=true");
+
+        // Get all the appUserList where phoneNumber is null
+        defaultAppUserShouldNotBeFound("phoneNumber.specified=false");
+    }
+
+    @Test
+    @Transactional
+    public void getAllAppUsersByStartDateIsEqualToSomething() throws Exception {
+        // Initialize the database
+        appUserRepository.saveAndFlush(appUser);
+
+        // Get all the appUserList where startDate equals to DEFAULT_START_DATE
+        defaultAppUserShouldBeFound("startDate.equals=" + DEFAULT_START_DATE);
+
+        // Get all the appUserList where startDate equals to UPDATED_START_DATE
+        defaultAppUserShouldNotBeFound("startDate.equals=" + UPDATED_START_DATE);
+    }
+
+    @Test
+    @Transactional
+    public void getAllAppUsersByStartDateIsInShouldWork() throws Exception {
+        // Initialize the database
+        appUserRepository.saveAndFlush(appUser);
+
+        // Get all the appUserList where startDate in DEFAULT_START_DATE or UPDATED_START_DATE
+        defaultAppUserShouldBeFound("startDate.in=" + DEFAULT_START_DATE + "," + UPDATED_START_DATE);
+
+        // Get all the appUserList where startDate equals to UPDATED_START_DATE
+        defaultAppUserShouldNotBeFound("startDate.in=" + UPDATED_START_DATE);
+    }
+
+    @Test
+    @Transactional
+    public void getAllAppUsersByStartDateIsNullOrNotNull() throws Exception {
+        // Initialize the database
+        appUserRepository.saveAndFlush(appUser);
+
+        // Get all the appUserList where startDate is not null
+        defaultAppUserShouldBeFound("startDate.specified=true");
+
+        // Get all the appUserList where startDate is null
+        defaultAppUserShouldNotBeFound("startDate.specified=false");
+    }
+
+    @Test
+    @Transactional
+    public void getAllAppUsersByEndDateIsEqualToSomething() throws Exception {
+        // Initialize the database
+        appUserRepository.saveAndFlush(appUser);
+
+        // Get all the appUserList where endDate equals to DEFAULT_END_DATE
+        defaultAppUserShouldBeFound("endDate.equals=" + DEFAULT_END_DATE);
+
+        // Get all the appUserList where endDate equals to UPDATED_END_DATE
+        defaultAppUserShouldNotBeFound("endDate.equals=" + UPDATED_END_DATE);
+    }
+
+    @Test
+    @Transactional
+    public void getAllAppUsersByEndDateIsInShouldWork() throws Exception {
+        // Initialize the database
+        appUserRepository.saveAndFlush(appUser);
+
+        // Get all the appUserList where endDate in DEFAULT_END_DATE or UPDATED_END_DATE
+        defaultAppUserShouldBeFound("endDate.in=" + DEFAULT_END_DATE + "," + UPDATED_END_DATE);
+
+        // Get all the appUserList where endDate equals to UPDATED_END_DATE
+        defaultAppUserShouldNotBeFound("endDate.in=" + UPDATED_END_DATE);
+    }
+
+    @Test
+    @Transactional
+    public void getAllAppUsersByEndDateIsNullOrNotNull() throws Exception {
+        // Initialize the database
+        appUserRepository.saveAndFlush(appUser);
+
+        // Get all the appUserList where endDate is not null
+        defaultAppUserShouldBeFound("endDate.specified=true");
+
+        // Get all the appUserList where endDate is null
+        defaultAppUserShouldNotBeFound("endDate.specified=false");
+    }
+
+    @Test
+    @Transactional
+    public void getAllAppUsersByAddressIsEqualToSomething() throws Exception {
+        // Initialize the database
+        Address address = AddressResourceIntTest.createEntity(em);
+        em.persist(address);
+        em.flush();
+        appUser.addAddress(address);
+        appUserRepository.saveAndFlush(appUser);
+        Long addressId = address.getId();
+
+        // Get all the appUserList where address equals to addressId
+        defaultAppUserShouldBeFound("addressId.equals=" + addressId);
+
+        // Get all the appUserList where address equals to addressId + 1
+        defaultAppUserShouldNotBeFound("addressId.equals=" + (addressId + 1));
+    }
+
+    /**
+     * Executes the search, and checks that the default entity is returned
+     */
+    private void defaultAppUserShouldBeFound(String filter) throws Exception {
+        restAppUserMockMvc.perform(get("/api/app-users?sort=id,desc&" + filter))
+            .andExpect(status().isOk())
+            .andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8_VALUE))
+            .andExpect(jsonPath("$.[*].id").value(hasItem(appUser.getId().intValue())))
+            .andExpect(jsonPath("$.[*].firstName").value(hasItem(DEFAULT_FIRST_NAME)))
+            .andExpect(jsonPath("$.[*].lastName").value(hasItem(DEFAULT_LAST_NAME)))
+            .andExpect(jsonPath("$.[*].email").value(hasItem(DEFAULT_EMAIL)))
+            .andExpect(jsonPath("$.[*].phoneNumber").value(hasItem(DEFAULT_PHONE_NUMBER)))
+            .andExpect(jsonPath("$.[*].startDate").value(hasItem(DEFAULT_START_DATE.toString())))
+            .andExpect(jsonPath("$.[*].endDate").value(hasItem(DEFAULT_END_DATE.toString())));
+
+        // Check, that the count call also returns 1
+        restAppUserMockMvc.perform(get("/api/app-users/count?sort=id,desc&" + filter))
+            .andExpect(status().isOk())
+            .andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8_VALUE))
+            .andExpect(content().string("1"));
+    }
+
+    /**
+     * Executes the search, and checks that the default entity is not returned
+     */
+    private void defaultAppUserShouldNotBeFound(String filter) throws Exception {
+        restAppUserMockMvc.perform(get("/api/app-users?sort=id,desc&" + filter))
+            .andExpect(status().isOk())
+            .andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8_VALUE))
+            .andExpect(jsonPath("$").isArray())
+            .andExpect(jsonPath("$").isEmpty());
+
+        // Check, that the count call also returns 0
+        restAppUserMockMvc.perform(get("/api/app-users/count?sort=id,desc&" + filter))
+            .andExpect(status().isOk())
+            .andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8_VALUE))
+            .andExpect(content().string("0"));
+    }
+
 
     @Test
     @Transactional
